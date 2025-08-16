@@ -42,27 +42,6 @@ export default function Header({ currentView, onNavigate, onCrisisAlert, onVoice
         ? 'glass-header backdrop-blur-30 shadow-lg py-2' 
         : 'glass-header backdrop-blur-20 py-4'
     }`}>
-      {/* Bolt Badge - Top Right Corner */}
-      <motion.a
-        href="https://bolt.new"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="absolute top-2 right-4 z-50"
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        title="Powered by Bolt"
-      >
-        <div className="w-12 h-12 glass-card flex items-center justify-center hover:shadow-lg transition-all duration-300">
-          <img
-            src="/black_circle_360x360.png"
-            alt="Powered by Bolt"
-            className="w-8 h-8 rounded-full"
-          />
-        </div>
-      </motion.a>
-
-      <div className="container mx-auto px-4 max-w-7xl">
-        <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <motion.div 
             className="flex items-center space-x-3"
