@@ -84,7 +84,7 @@ export default function BiometricAuth({ onAuth }: BiometricAuthProps) {
       </div>
        {/* Bolt Badge - Top Right Corner */}
       <motion.a
-        href="https://bolt.new"
+        href="_blank"
         target="_blank"
         rel="noopener noreferrer"
         className="fixed top-6 right-6 z-50"
