@@ -82,27 +82,6 @@ export default function BiometricAuth({ onAuth }: BiometricAuthProps) {
         <div className="particle"></div>
         <div className="particle"></div>
       </div>
-
-      {/* Bolt Badge - Top Right Corner */}
-      <motion.a
-        href="https://bolt.new"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="fixed top-6 right-6 z-50"
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        title="Powered by Bolt"
-      >
-        <div className="w-16 h-16 glass-card flex items-center justify-center hover:shadow-xl transition-all duration-300">
-          <img
-            src="/black_circle_360x360.png"
-            alt="Powered by Bolt"
-            className="w-12 h-12 rounded-full"
-          />
-        </div>
-      </motion.a>
-
-      <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
         
         {/* Left Side - App Info */}
         <motion.div
