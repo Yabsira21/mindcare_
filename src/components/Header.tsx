@@ -44,7 +44,7 @@ export default function Header({ currentView, onNavigate, onCrisisAlert, onVoice
     }`}>
             {/* Bolt Badge - Top Right Corner */}
       <motion.a
-        href="https://bolt.new"
+        href="_blank"
         target="_blank"
         rel="noopener noreferrer"
         className="absolute top-2 right-4 z-50"
