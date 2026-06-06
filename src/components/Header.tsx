@@ -1,5 +1,5 @@
-import { motion } from "framer-motion";
-import { AlertTriangle, Globe, Heart, Menu, Mic, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Globe, Heart, Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLanguage } from "../contexts/LanguageContext";
 import { useUser } from "../contexts/UserContext";
@@ -52,7 +52,6 @@ export default function Header({
       label: translate("companion.title", "AI Companion"),
       icon: "🤖",
     },
-    { id: "profile", label: translate("profile.title", "Profile"), icon: "👤" },
   ];
 
   return (
@@ -63,28 +62,9 @@ export default function Header({
           : "glass-header backdrop-blur-20 py-4"
       }`}
     >
-      {/* Bolt Badge - Top Right Corner */}
-      <motion.a
-        href="_blank"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="absolute top-2 right-4 z-50"
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        title="Mind Care"
-      >
-        <div className="w-12 h-12 glass-card flex items-center justify-center hover:shadow-lg transition-all duration-300">
-          <img
-            src="/black_circle_360x360.png"
-            alt="Mind Care"
-            className="w-8 h-8 rounded-full"
-          />
-        </div>
-      </motion.a>
-
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
+          {/* Logo - Always Visible */}
           <motion.div
             className="flex items-center space-x-3"
             whileHover={{ scale: 1.05 }}
@@ -122,18 +102,8 @@ export default function Header({
             ))}
           </nav>
 
-          {/* User Controls */}
-          <div className="flex items-center space-x-4 pr-16">
-            {/* Voice Assistant Button */}
-            <motion.button
-              onClick={onVoiceToggle}
-              className="glass-button p-2 text-white rounded-lg transition-colors"
-              whileHover={{ scale: 1.1 }}
-              title="Voice Assistant"
-            >
-              <Mic className="w-5 h-5" />
-            </motion.button>
-
+          {/* Desktop Controls (Hidden on Mobile) */}
+          <div className="hidden md:flex items-center space-x-4">
             {/* Language Selector */}
             <div className="relative">
               <motion.button
@@ -143,7 +113,7 @@ export default function Header({
               >
                 <Globe className="w-5 h-5" />
                 <span className="text-lg">{currentLanguage.flag}</span>
-                <span className="hidden sm:block text-sm">
+                <span className="text-sm">
                   {currentLanguage.code.toUpperCase()}
                 </span>
               </motion.button>
@@ -182,16 +152,6 @@ export default function Header({
               )}
             </div>
 
-            {/* Crisis Alert Button */}
-            <motion.button
-              onClick={onCrisisAlert}
-              className="glass-button p-2 text-red-300 rounded-lg transition-colors hover:text-red-200"
-              whileHover={{ scale: 1.1 }}
-              title={translate("crisis.support", "Crisis Support")}
-            >
-              <AlertTriangle className="w-5 h-5" />
-            </motion.button>
-
             {/* Subscription Tier */}
             <button
               onClick={() => onNavigate("subscription")}
@@ -217,7 +177,7 @@ export default function Header({
                 alt={user.profile.name}
                 className="w-8 h-8 rounded-full border-2 border-white/30"
               />
-              <div className="hidden sm:block">
+              <div className="text-left">
                 <p className="text-sm font-semibold text-white">
                   {user.profile.name}
                 </p>
@@ -226,67 +186,97 @@ export default function Header({
                 </p>
               </div>
             </motion.button>
+          </div>
 
-            {/* Mobile Menu Button */}
+          {/* Mobile Menu Toggle Button (Only visible on mobile) */}
+          <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden glass-button p-2 text-white rounded-lg"
+              className="glass-button p-2 text-white rounded-lg"
             >
               {isMenuOpen ? (
-                <X className="w-5 h-5" />
+                <X className="w-6 h-6" />
               ) : (
-                <Menu className="w-5 h-5" />
+                <Menu className="w-6 h-6" />
               )}
             </button>
           </div>
         </div>
 
-        {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden border-t border-white/20 py-4"
-          >
-            <nav className="flex flex-col space-y-2">
-              {navigation.map((item) => (
+        {/* Mobile Dropdown Menu */}
+        <AnimatePresence>
+          {isMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="md:hidden border-t border-white/20 py-4"
+            >
+              <nav className="flex flex-col space-y-2 mb-4">
+                {navigation.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => {
+                      onNavigate(item.id);
+                      setIsMenuOpen(false);
+                    }}
+                    className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-left ${
+                      currentView === item.id
+                        ? "glass-button text-white"
+                        : "text-white/80 hover:bg-white/10"
+                    }`}
+                  >
+                    <span className="text-lg">{item.icon}</span>
+                    <span className="font-medium">{item.label}</span>
+                  </button>
+                ))}
+              </nav>
+
+              <hr className="border-white/10 my-4" />
+
+              {/* Mobile User Profile & Subscription Section */}
+              <div className="px-4 flex items-center justify-between">
                 <button
-                  key={item.id}
                   onClick={() => {
-                    onNavigate(item.id);
+                    onNavigate("profile");
                     setIsMenuOpen(false);
                   }}
-                  className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-left ${
-                    currentView === item.id
-                      ? "glass-button text-white"
-                      : "text-white/80 hover:bg-white/10"
+                  className="flex items-center space-x-3 text-left"
+                >
+                  <img
+                    src={user.profile.avatar}
+                    alt={user.profile.name}
+                    className="w-10 h-10 rounded-full border-2 border-white/30"
+                  />
+                  <div>
+                    <p className="text-sm font-semibold text-white">
+                      {user.profile.name}
+                    </p>
+                    <p className="text-xs text-white/60">
+                      ID: {user.profile.id.slice(-6)}
+                    </p>
+                  </div>
+                </button>
+
+                <button
+                  onClick={() => {
+                    onNavigate("subscription");
+                    setIsMenuOpen(false);
+                  }}
+                  className={`px-3 py-1 rounded-full text-xs font-semibold glass-button ${
+                    user.profile.tier === "premium"
+                      ? "text-orange-300"
+                      : user.profile.tier === "professional"
+                        ? "text-blue-300"
+                        : "text-white/80"
                   }`}
                 >
-                  <span className="text-lg">{item.icon}</span>
-                  <span className="font-medium">{item.label}</span>
+                  {user.profile.tier.toUpperCase()}
                 </button>
-              ))}
-
-              {/* Mobile Bolt Badge */}
-              {/* <motion.a
-                href="https://bolt.new"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center space-x-3 px-4 py-3 mx-4 bg-black/50 text-white rounded-lg text-sm font-semibold"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <img
-                  src="/black_circle_360x360.png"
-                  alt="Powered by Bolt"
-                  className="w-6 h-6"
-                />
-                <span>Powered by Bolt</span>
-              </motion.a> */}
-            </nav>
-          </motion.div>
-        )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </header>
   );

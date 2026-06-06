@@ -11,10 +11,12 @@ import {
 import { useRef, useState } from "react";
 import { useAI } from "../contexts/AIContext";
 import { useUser } from "../contexts/UserContext";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export default function MoodTracker() {
   const { user, updateUser } = useUser();
   const { analyzeEmotion } = useAI();
+  const { translate } = useLanguage();
   const [currentMood, setCurrentMood] = useState(5);
   const [anxiety, setAnxiety] = useState(5);
   const [energy, setEnergy] = useState(5);
@@ -52,37 +54,19 @@ export default function MoodTracker() {
     "Excited",
     "Euphoric",
   ];
-  const moodColors = [
-    "from-red-600 to-red-700",
-    "from-red-500 to-red-600",
-    "from-orange-500 to-red-500",
-    "from-yellow-500 to-orange-500",
-    "from-yellow-400 to-yellow-500",
-    "from-green-400 to-yellow-400",
-    "from-green-500 to-green-400",
-    "from-green-600 to-green-500",
-    "from-blue-500 to-green-500",
-    "from-purple-500 to-blue-500",
-  ];
 
   // Advanced voice analysis function
   const analyzeVoicePattern = async (transcript: any, audioFeatures: any) => {
     try {
-      // Simulate advanced voice analysis with realistic variations
-      // const textAnalysis = await analyzeEmotion(transcript);
-
-      // Simulate audio feature analysis (pitch, speed, pauses)
       const pitchVariation = audioFeatures.pitchVariation || Math.random();
       const speechRate = audioFeatures.speechRate || 0.5 + Math.random() * 0.5;
       const pauseFrequency = audioFeatures.pauseFrequency || Math.random();
       const volumeVariation = audioFeatures.volumeVariation || Math.random();
 
-      // Calculate mood score based on multiple factors
-      let moodScore = 5; // baseline neutral
+      let moodScore = 5;
       let stressLevel = 5;
       let energyLevel = 5;
 
-      // Text-based emotion analysis
       const lowerText = transcript.toLowerCase();
       if (
         lowerText.includes("happy") ||
@@ -124,18 +108,15 @@ export default function MoodTracker() {
         moodScore -= 1;
       }
 
-      // Voice feature analysis
-      // High pitch variation often indicates excitement or anxiety
       if (pitchVariation > 0.7) {
         if (moodScore > 5) {
-          moodScore += 1; // excited
+          moodScore += 1;
           energyLevel += 1;
         } else {
-          stressLevel += 1; // anxious
+          stressLevel += 1;
         }
       }
 
-      // Fast speech rate can indicate anxiety or excitement
       if (speechRate > 0.7) {
         energyLevel += 1;
         if (stressLevel > 5) {
@@ -146,24 +127,20 @@ export default function MoodTracker() {
         moodScore -= 0.5;
       }
 
-      // Frequent pauses might indicate hesitation or sadness
       if (pauseFrequency > 0.6) {
         moodScore -= 1;
         stressLevel += 0.5;
       }
 
-      // Low volume variation might indicate monotone/depressed speech
       if (volumeVariation < 0.3) {
         moodScore -= 1;
         energyLevel -= 1;
       }
 
-      // Clamp values between 1-10
       moodScore = Math.max(1, Math.min(10, Math.round(moodScore)));
       stressLevel = Math.max(1, Math.min(10, Math.round(stressLevel)));
       energyLevel = Math.max(1, Math.min(10, Math.round(energyLevel)));
 
-      // Generate insights based on analysis
       const insights = [];
       const criteria = [];
 
@@ -196,7 +173,6 @@ export default function MoodTracker() {
         insights.push("Monotone speech patterns detected");
       }
 
-      // Add text-based insights
       if (lowerText.includes("happy") || lowerText.includes("great")) {
         insights.push("Positive language patterns detected");
       } else if (lowerText.includes("sad") || lowerText.includes("down")) {
@@ -205,10 +181,10 @@ export default function MoodTracker() {
 
       return {
         detectedMood: moodScore,
-        stressLevel: 10 - stressLevel, // Invert for anxiety (lower is better)
+        stressLevel: 10 - stressLevel,
         energyLevel: energyLevel,
-        confidence: 0.75 + Math.random() * 0.2, // 75-95% confidence
-        keyInsights: insights.slice(0, 3), // Top 3 insights
+        confidence: 0.75 + Math.random() * 0.2,
+        keyInsights: insights.slice(0, 3),
         analysisDetails: {
           pitchVariation: (pitchVariation * 100).toFixed(1) + "%",
           speechRate:
@@ -255,7 +231,6 @@ export default function MoodTracker() {
 
   const handleVoiceRecord = async () => {
     if (isRecording) {
-      // Stop recording
       if (recognitionRef.current) {
         recognitionRef.current.stop();
       }
@@ -270,7 +245,6 @@ export default function MoodTracker() {
     setVoiceAnalysis(null);
 
     try {
-      // Initialize speech recognition
       if (
         "webkitSpeechRecognition" in window ||
         "SpeechRecognition" in window
@@ -282,7 +256,6 @@ export default function MoodTracker() {
         recognitionRef.current.interimResults = false;
         recognitionRef.current.lang = "en-US";
 
-        // Initialize audio context for voice analysis
         audioContextRef.current = new (
           window.AudioContext || window.webkitAudioContext
         )();
@@ -305,7 +278,6 @@ export default function MoodTracker() {
 
           if (transcript.trim()) {
             try {
-              // Simulate audio feature extraction
               const audioFeatures = {
                 pitchVariation: Math.random(),
                 speechRate: 0.3 + Math.random() * 0.7,
@@ -323,14 +295,11 @@ export default function MoodTracker() {
                 transcript: transcript,
               });
 
-              // Update mood sliders based on analysis
               setCurrentMood(analysis.detectedMood);
               setAnxiety(analysis.stressLevel);
               setEnergy(analysis.energyLevel);
-
               setIsRecording(false);
 
-              // Stop audio stream
               stream.getTracks().forEach((track) => track.stop());
               if (audioContextRef.current) {
                 audioContextRef.current.close();
@@ -376,14 +345,11 @@ export default function MoodTracker() {
         voiceAnalysis: voiceAnalysis,
       };
 
-      // Simulate save delay
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      // Update user mood history
       const updatedHistory = [moodEntry, ...user.moodHistory.slice(0, 29)];
       updateUser({ moodHistory: updatedHistory });
 
-      // Save to localStorage as backup
       const savedMoods = JSON.parse(
         localStorage.getItem("mindcare_moods") || "[]",
       );
@@ -391,11 +357,10 @@ export default function MoodTracker() {
       localStorage.setItem(
         "mindcare_moods",
         JSON.stringify(savedMoods.slice(0, 100)),
-      ); // Keep last 100 entries
+      );
 
       setSaveSuccess(true);
 
-      // Reset form after successful save
       setTimeout(() => {
         setNotes("");
         setVoiceAnalysis(null);
@@ -409,11 +374,6 @@ export default function MoodTracker() {
     }
   };
 
-  // const getMoodColor = (value) => {
-  //   const index = Math.max(0, Math.min(9, Math.floor((value - 1) / 1)));
-  //   return moodColors[index];
-  // };
-
   const getMoodEmoji = (value) => {
     const index = Math.max(0, Math.min(9, Math.floor((value - 1) / 1)));
     return moodEmojis[index];
@@ -421,7 +381,7 @@ export default function MoodTracker() {
 
   const getMoodLabel = (value) => {
     const index = Math.max(0, Math.min(9, Math.floor((value - 1) / 1)));
-    return moodLabels[index];
+    return translate(moodLabels[index], moodLabels[index]);
   };
 
   return (
@@ -433,10 +393,16 @@ export default function MoodTracker() {
         className="text-center"
       >
         <h1 className="text-3xl font-bold gradient-text mb-4">
-          How are you feeling today?
+          {translate(
+            "How are you feeling today?",
+            "How are you feeling today?",
+          )}
         </h1>
         <p className="text-white/80 text-lg">
-          Track your mood with AI-powered voice analysis
+          {translate(
+            "Track your mood with AI-powered voice analysis",
+            "Track your mood with AI-powered voice analysis",
+          )}
         </p>
       </motion.div>
 
@@ -451,7 +417,12 @@ export default function MoodTracker() {
           >
             <div className="flex items-center text-green-300">
               <CheckCircle className="w-5 h-5 mr-2" />
-              <span>Mood entry saved successfully! ✅</span>
+              <span>
+                {translate(
+                  "Mood entry saved successfully! ✅",
+                  "Mood entry saved successfully! ✅",
+                )}
+              </span>
             </div>
           </motion.div>
         )}
@@ -465,10 +436,13 @@ export default function MoodTracker() {
           >
             <div className="flex items-center text-red-300">
               <AlertCircle className="w-5 h-5 mr-2" />
-              <span>{voiceError}</span>
+              <span>{translate(voiceError, voiceError)}</span>
             </div>
             <p className="text-sm text-white/60 mt-2">
-              Couldn't detect mood. Try manual entry below!
+              {translate(
+                "Couldn't detect mood. Try manual entry below!",
+                "Couldn't detect mood. Try manual entry below!",
+              )}
             </p>
           </motion.div>
         )}
@@ -481,45 +455,58 @@ export default function MoodTracker() {
         transition={{ delay: 0.2 }}
         className="glass-card p-8"
       >
-        <div className="text-center">
+        <div className="flex flex-col items-center text-center">
           <h3 className="text-xl font-semibold text-white mb-4">
-            Voice Mood Analysis
+            {translate("Voice Mood Analysis", "Voice Mood Analysis")}
           </h3>
-          <p className="text-white/70 mb-6">
-            Tell us about your day and let AI analyze your emotional state
+          <p className="text-white/70 mb-6 max-w-md">
+            {translate(
+              "Tell us about your day and let AI analyze your emotional state",
+              "Tell us about your day and let AI analyze your emotional state",
+            )}
           </p>
 
-          <motion.button
-            onClick={handleVoiceRecord}
-            className={`relative w-24 h-24 rounded-full flex items-center justify-center text-white font-semibold transition-all duration-300 ${
-              isRecording
-                ? "bg-red-500 animate-pulse shadow-2xl"
-                : "gradient-button shadow-lg hover:shadow-xl"
-            }`}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            {isRecording ? (
-              <>
-                <MicOff className="w-8 h-8" />
-                <div className="absolute inset-0 rounded-full border-4 border-white animate-ping opacity-75" />
-              </>
-            ) : (
-              <Mic className="w-8 h-8" />
-            )}
-          </motion.button>
+          {/* Fixed Alignment Button Area Container */}
+          <div className="flex justify-center items-center w-full h-28 my-2">
+            <motion.button
+              onClick={handleVoiceRecord}
+              className={`relative w-24 h-24 rounded-full flex items-center justify-center text-white font-semibold transition-all duration-300 z-10 ${
+                isRecording
+                  ? "bg-red-500 shadow-2xl"
+                  : "gradient-button shadow-lg hover:shadow-xl"
+              }`}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              {isRecording ? (
+                <>
+                  <MicOff className="w-8 h-8 z-20" />
+                  <div className="absolute inset-0 rounded-full border-4 border-white animate-ping opacity-75 z-0" />
+                </>
+              ) : (
+                <Mic className="w-8 h-8" />
+              )}
+            </motion.button>
+          </div>
 
           <p className="mt-4 text-sm text-white/60">
             {isRecording
-              ? "Recording... Speak naturally about how you feel"
-              : "Tap to start voice analysis"}
+              ? translate(
+                  "Recording... Speak naturally about how you feel",
+                  "Recording... Speak naturally about how you feel",
+                )
+              : translate(
+                  "Tap to start voice analysis",
+                  "Tap to start voice analysis",
+                )}
           </p>
 
-          {/* Test Suggestions */}
           <div className="mt-4 text-xs text-white/50">
             <p>
-              💡 Try saying: "I'm feeling great today!" or "I've been really
-              stressed lately"
+              {translate(
+                '💡 Try saying: "I\'m feeling great today!" or "I\'ve been really stressed lately"',
+                '💡 Try saying: "I\'m feeling great today!" or "I\'ve been really stressed lately"',
+              )}
             </p>
           </div>
 
@@ -530,18 +517,20 @@ export default function MoodTracker() {
               className="mt-6 flex justify-center items-center space-x-2"
             >
               <Volume2 className="w-5 h-5 text-blue-400" />
-              <div className="flex space-x-1">
+              <div className="flex space-x-1 items-center h-8">
                 {[...Array(5)].map((_, i) => (
                   <motion.div
                     key={i}
-                    className="w-1 h-8 bg-blue-400 rounded-full"
+                    className="w-1 bg-blue-400 rounded-full"
+                    style={{ height: "100%" }}
                     animate={{
-                      scaleY: [1, 0.5, 1],
+                      scaleY: [0.3, 1, 0.3],
                     }}
                     transition={{
-                      duration: 0.5,
+                      duration: 0.6,
                       repeat: Infinity,
                       delay: i * 0.1,
+                      ease: "easeInOut",
                     }}
                   />
                 ))}
@@ -560,7 +549,10 @@ export default function MoodTracker() {
             <div className="flex items-center mb-4">
               <Sparkles className="w-5 h-5 text-blue-400 mr-2" />
               <h4 className="font-semibold text-white">
-                AI Voice Analysis Results
+                {translate(
+                  "AI Voice Analysis Results",
+                  "AI Voice Analysis Results",
+                )}
               </h4>
             </div>
 
@@ -569,25 +561,33 @@ export default function MoodTracker() {
                 <div className="text-2xl font-bold text-blue-400">
                   {voiceAnalysis.detectedMood}/10
                 </div>
-                <div className="text-sm text-white/60">Mood Score</div>
+                <div className="text-sm text-white/60">
+                  {translate("Mood Score", "Mood Score")}
+                </div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-orange-400">
                   {voiceAnalysis.stressLevel}/10
                 </div>
-                <div className="text-sm text-white/60">Anxiety Level</div>
+                <div className="text-sm text-white/60">
+                  {translate("Anxiety Level", "Anxiety Level")}
+                </div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-green-400">
                   {voiceAnalysis.energyLevel}/10
                 </div>
-                <div className="text-sm text-white/60">Energy Level</div>
+                <div className="text-sm text-white/60">
+                  {translate("Energy Level", "Energy Level")}
+                </div>
               </div>
             </div>
 
             <div className="space-y-4">
               <div className="glass-card p-4">
-                <h5 className="font-medium text-white mb-2">What you said:</h5>
+                <h5 className="font-medium text-white mb-2">
+                  {translate("What you said:", "What you said:")}
+                </h5>
                 <p className="text-sm text-white/80 italic">
                   "{voiceAnalysis.transcript}"
                 </p>
@@ -595,38 +595,49 @@ export default function MoodTracker() {
 
               <div className="glass-card p-4">
                 <h5 className="font-medium text-white mb-2">
-                  Analysis Details:
+                  {translate("Analysis Details:", "Analysis Details:")}
                 </h5>
                 <div className="grid grid-cols-2 gap-2 text-sm">
                   <div>
-                    Pitch Variation:{" "}
+                    {translate("Pitch Variation:", "Pitch Variation:")}{" "}
                     <span className="text-blue-300">
                       {voiceAnalysis.analysisDetails.pitchVariation}
                     </span>
                   </div>
                   <div>
-                    Speech Rate:{" "}
+                    {translate("Speech Rate:", "Speech Rate:")}{" "}
                     <span className="text-green-300">
-                      {voiceAnalysis.analysisDetails.speechRate}
+                      {translate(
+                        voiceAnalysis.analysisDetails.speechRate,
+                        voiceAnalysis.analysisDetails.speechRate,
+                      )}
                     </span>
                   </div>
                   <div>
-                    Pause Frequency:{" "}
+                    {translate("Pause Frequency:", "Pause Frequency:")}{" "}
                     <span className="text-yellow-300">
-                      {voiceAnalysis.analysisDetails.pauseFrequency}
+                      {translate(
+                        voiceAnalysis.analysisDetails.pauseFrequency,
+                        voiceAnalysis.analysisDetails.pauseFrequency,
+                      )}
                     </span>
                   </div>
                   <div>
-                    Volume Variation:{" "}
+                    {translate("Volume Variation:", "Volume Variation:")}{" "}
                     <span className="text-purple-300">
-                      {voiceAnalysis.analysisDetails.volumeVariation}
+                      {translate(
+                        voiceAnalysis.analysisDetails.volumeVariation,
+                        voiceAnalysis.analysisDetails.volumeVariation,
+                      )}
                     </span>
                   </div>
                 </div>
               </div>
 
               <div className="glass-card p-4">
-                <h5 className="font-medium text-white mb-2">Key Insights:</h5>
+                <h5 className="font-medium text-white mb-2">
+                  {translate("Key Insights:", "Key Insights:")}
+                </h5>
                 <ul className="space-y-1">
                   {voiceAnalysis.keyInsights.map((insight, index) => (
                     <li
@@ -634,22 +645,31 @@ export default function MoodTracker() {
                       className="text-sm text-white/80 flex items-center"
                     >
                       <div className="w-1.5 h-1.5 bg-blue-400 rounded-full mr-2" />
-                      {insight}
+                      {translate(insight, insight)}
                     </li>
                   ))}
                 </ul>
               </div>
 
               <div className="glass-card p-4">
-                <h5 className="font-medium text-white mb-2">Recommendation:</h5>
+                <h5 className="font-medium text-white mb-2">
+                  {translate("Recommendation:", "Recommendation:")}
+                </h5>
                 <p className="text-sm text-white/80">
-                  {voiceAnalysis.recommendation}
+                  {translate(
+                    voiceAnalysis.recommendation,
+                    voiceAnalysis.recommendation,
+                  )}
                 </p>
               </div>
 
               <div className="text-center text-xs text-white/50">
-                Confidence: {Math.round(voiceAnalysis.confidence * 100)}% •
-                Powered by Advanced Voice Analysis
+                {translate("Confidence:", "Confidence:")}{" "}
+                {Math.round(voiceAnalysis.confidence * 100)}% •{" "}
+                {translate(
+                  "Powered by Advanced Voice Analysis",
+                  "Powered by Advanced Voice Analysis",
+                )}
               </div>
             </div>
           </motion.div>
@@ -664,14 +684,16 @@ export default function MoodTracker() {
         className="glass-card p-8"
       >
         <h3 className="text-xl font-semibold text-white mb-6">
-          Manual Mood Entry
+          {translate("Manual Mood Entry", "Manual Mood Entry")}
         </h3>
 
         {/* Mood Slider */}
         <div className="space-y-6">
           <div>
             <div className="flex items-center justify-between mb-4">
-              <label className="text-white font-medium">Overall Mood</label>
+              <label className="text-white font-medium">
+                {translate("Overall Mood", "Overall Mood")}
+              </label>
               <div className="flex items-center space-x-3">
                 <span className="text-3xl">{getMoodEmoji(currentMood)}</span>
                 <div className="text-right">
@@ -697,10 +719,10 @@ export default function MoodTracker() {
                 }}
               />
               <div className="flex justify-between text-xs text-white/50 mt-2">
-                <span>😢 Very Sad</span>
-                <span>😐 Neutral</span>
-                <span>😊 Happy</span>
-                <span>🌟 Euphoric</span>
+                <span>{translate("😢 Very Sad", "😢 Very Sad")}</span>
+                <span>{translate("😐 Neutral", "😐 Neutral")}</span>
+                <span>{translate("😊 Happy", "😊 Happy")}</span>
+                <span>{translate("🌟 Euphoric", "🌟 Euphoric")}</span>
               </div>
             </div>
           </div>
@@ -708,10 +730,15 @@ export default function MoodTracker() {
           {/* Anxiety Slider */}
           <div>
             <div className="flex items-center justify-between mb-4">
-              <label className="text-white font-medium">Anxiety Level</label>
+              <label className="text-white font-medium">
+                {translate("Anxiety Level", "Anxiety Level")}
+              </label>
               <div className="text-right">
                 <div className="text-sm text-white font-medium">
-                  {anxiety <= 3 ? "Low" : anxiety <= 6 ? "Moderate" : "High"}
+                  {translate(
+                    anxiety <= 3 ? "Calm" : anxiety <= 6 ? "Moderate" : "High",
+                    anxiety <= 3 ? "Calm" : anxiety <= 6 ? "Moderate" : "High",
+                  )}
                 </div>
                 <div className="text-xs text-white/60">{anxiety}/10</div>
               </div>
@@ -728,19 +755,24 @@ export default function MoodTracker() {
               }}
             />
             <div className="flex justify-between text-xs text-white/50 mt-2">
-              <span>😌 Calm</span>
-              <span>😐 Moderate</span>
-              <span>😰 Very Anxious</span>
+              <span>{translate("😌 Calm", "😌 Calm")}</span>
+              <span>{translate("😐 Moderate", "😐 Moderate")}</span>
+              <span>{translate("😰 Very Anxious", "😰 Very Anxious")}</span>
             </div>
           </div>
 
           {/* Energy Slider */}
           <div>
             <div className="flex items-center justify-between mb-4">
-              <label className="text-white font-medium">Energy Level</label>
+              <label className="text-white font-medium">
+                {translate("Energy Level", "Energy Level")}
+              </label>
               <div className="text-right">
                 <div className="text-sm text-white font-medium">
-                  {energy <= 3 ? "Low" : energy <= 6 ? "Moderate" : "High"}
+                  {translate(
+                    energy <= 3 ? "Low" : energy <= 6 ? "Moderate" : "High",
+                    energy <= 3 ? "Low" : energy <= 6 ? "Moderate" : "High",
+                  )}
                 </div>
                 <div className="text-xs text-white/60">{energy}/10</div>
               </div>
@@ -757,9 +789,9 @@ export default function MoodTracker() {
               }}
             />
             <div className="flex justify-between text-xs text-white/50 mt-2">
-              <span>😴 Exhausted</span>
-              <span>😐 Moderate</span>
-              <span>⚡ Energetic</span>
+              <span>{translate("😴 Exhausted", "😴 Exhausted")}</span>
+              <span>{translate("😐 Moderate", "😐 Moderate")}</span>
+              <span>{translate("⚡ Energetic", "⚡ Energetic")}</span>
             </div>
           </div>
         </div>
@@ -767,12 +799,18 @@ export default function MoodTracker() {
         {/* Notes */}
         <div className="mt-8">
           <label className="block text-white font-medium mb-3">
-            Additional Notes (Optional)
+            {translate(
+              "Additional Notes (Optional)",
+              "Additional Notes (Optional)",
+            )}
           </label>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            placeholder="What's on your mind? Any specific events or thoughts affecting your mood?"
+            placeholder={translate(
+              "What's on your mind? Any specific events or thoughts affecting your mood?",
+              "What's on your mind? Any specific events or thoughts affecting your mood?",
+            )}
             className="w-full p-4 glass-card text-white placeholder-white/50 rounded-xl focus:ring-2 focus:ring-blue-400 focus:outline-none resize-none"
             rows={4}
           />
@@ -789,12 +827,12 @@ export default function MoodTracker() {
           {isSaving ? (
             <div className="flex items-center justify-center">
               <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2" />
-              Saving Entry...
+              {translate("Saving Entry...", "Saving Entry...")}
             </div>
           ) : (
             <div className="flex items-center justify-center">
               <Save className="w-5 h-5 mr-2" />
-              Save Mood Entry
+              {translate("Save Mood Entry", "Save Mood Entry")}
             </div>
           )}
         </motion.button>
