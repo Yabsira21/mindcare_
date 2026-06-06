@@ -43,6 +43,11 @@ export default function Header({
     { id: "art", label: translate("art.title", "Art Therapy"), icon: "🎨" },
     { id: "chat", label: translate("chat.title", "TicTac Chat"), icon: "💬" },
     {
+      id: "groupchat",
+      label: translate("groupchat.title", "Group Chat"),
+      icon: "👥",
+    },
+    {
       id: "companion",
       label: translate("companion.title", "AI Companion"),
       icon: "🤖",

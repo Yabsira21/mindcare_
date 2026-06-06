@@ -18,65 +18,65 @@ interface CrisisSupportProps {
 export default function CrisisSupport({ onClose }: CrisisSupportProps) {
   const emergencyContacts = [
     {
-      country: "India",
-      flag: "🇮🇳",
+      country: "Ethiopia",
+      flag: "🇪🇹",
       services: [
+        // {
+        //   name: "KIRAN Mental Health",
+        //   number: "1800-599-0019",
+        //   available: "24/7",
+        //   type: "crisis",
+        // },
+        // {
+        //   name: "AASRA Suicide Prevention",
+        //   number: "91-22-27546669",
+        //   available: "24/7",
+        //   type: "suicide",
+        // },
         {
-          name: "KIRAN Mental Health",
-          number: "1800-599-0019",
-          available: "24/7",
-          type: "crisis",
-        },
-        {
-          name: "AASRA Suicide Prevention",
-          number: "91-22-27546669",
-          available: "24/7",
-          type: "suicide",
-        },
-        {
-          name: "Vandrevala Foundation",
-          number: "1860-2662-345",
+          name: "Kirubel Zerihun",
+          number: "+251-947-338170",
           available: "24/7",
           type: "general",
         },
       ],
     },
-    {
-      country: "United States",
-      flag: "🇺🇸",
-      services: [
-        {
-          name: "Crisis Lifeline",
-          number: "988",
-          available: "24/7",
-          type: "crisis",
-        },
-        {
-          name: "Crisis Text Line",
-          number: "Text HOME to 741741",
-          available: "24/7",
-          type: "text",
-        },
-      ],
-    },
-    {
-      country: "International",
-      flag: "🌍",
-      services: [
-        {
-          name: "Find A Helpline",
-          number: "findahelpline.com",
-          available: "24/7",
-          type: "web",
-        },
-        {
-          name: "International Association",
-          number: "iasp.info/resources",
-          available: "24/7",
-          type: "web",
-        },
-      ],
-    },
+    // {
+    //   country: "United States",
+    //   flag: "🇺🇸",
+    //   services: [
+    //     {
+    //       name: "Crisis Lifeline",
+    //       number: "988",
+    //       available: "24/7",
+    //       type: "crisis",
+    //     },
+    //     {
+    //       name: "Crisis Text Line",
+    //       number: "Text HOME to 741741",
+    //       available: "24/7",
+    //       type: "text",
+    //     },
+    //   ],
+    // },
+    // {
+    //   country: "International",
+    //   flag: "🌍",
+    //   services: [
+    //     {
+    //       name: "Find A Helpline",
+    //       number: "findahelpline.com",
+    //       available: "24/7",
+    //       type: "web",
+    //     },
+    //     {
+    //       name: "International Association",
+    //       number: "iasp.info/resources",
+    //       available: "24/7",
+    //       type: "web",
+    //     },
+    //   ],
+    // },
   ];
 
   const copingTips = [

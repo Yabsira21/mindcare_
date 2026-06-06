@@ -1,3 +1,4 @@
+// App.tsx - Update the imports and add GroupChat
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import AICompanion from "./components/AICompanion";
@@ -11,6 +12,7 @@ import Subscription from "./components/Subscription";
 import TicTacChat from "./components/TicTacChat";
 import UserProfile from "./components/UserProfile";
 import VoiceAssistant from "./components/VoiceAssistant";
+import GroupChat from "./components/GroupChat"; // Add this import
 import { AIProvider } from "./contexts/AIContext";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import { UserProvider } from "./contexts/UserContext";
@@ -84,6 +86,8 @@ function App() {
                   {currentView === "mood" && <MoodTracker />}
                   {currentView === "art" && <ArtTherapy />}
                   {currentView === "chat" && <TicTacChat />}
+                  {currentView === "groupchat" && <GroupChat />}{" "}
+                  {/* Add this line */}
                   {currentView === "companion" && <AICompanion />}
                   {currentView === "profile" && <UserProfile />}
                   {currentView === "subscription" && <Subscription />}
