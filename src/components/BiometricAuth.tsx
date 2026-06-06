@@ -1,26 +1,26 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Camera, Mic, Shield, Eye, Volume2, Lock, Unlock } from 'lucide-react';
+import { useState, useRef } from "react";
+import { motion } from "framer-motion";
+import { Camera, Mic, Shield, Eye, Volume2, Lock, Unlock } from "lucide-react";
 
 interface BiometricAuthProps {
   onAuth: (success: boolean) => void;
 }
 
 export default function BiometricAuth({ onAuth }: BiometricAuthProps) {
-  const [authMethod, setAuthMethod] = useState<'face' | 'voice' | null>(null);
+  const [authMethod, setAuthMethod] = useState<"face" | "voice" | null>(null);
   const [isScanning, setIsScanning] = useState(false);
   const [progress, setProgress] = useState(0);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const handleFaceAuth = async () => {
-    setAuthMethod('face');
+    setAuthMethod("face");
     setIsScanning(true);
     setProgress(0);
 
     // Simulate face scanning
     const interval = setInterval(() => {
-      setProgress(prev => {
+      setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
           setIsScanning(false);
@@ -39,18 +39,18 @@ export default function BiometricAuth({ onAuth }: BiometricAuthProps) {
         videoRef.current.srcObject = stream;
       }
     } catch (error) {
-      console.log('Camera access denied - using demo mode');
+      console.log("Camera access denied - using demo mode");
     }
   };
 
   const handleVoiceAuth = async () => {
-    setAuthMethod('voice');
+    setAuthMethod("voice");
     setIsScanning(true);
     setProgress(0);
 
     // Simulate voice analysis
     const interval = setInterval(() => {
-      setProgress(prev => {
+      setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
           setIsScanning(false);
@@ -64,11 +64,11 @@ export default function BiometricAuth({ onAuth }: BiometricAuthProps) {
   };
 
   const features = [
-    'AI-powered mental health analysis',
-    'Secure biometric authentication',
-    'End-to-end encrypted conversations',
-    'Crisis intervention protocols',
-    'Personalized therapeutic content'
+    "AI-powered mental health analysis",
+    "Secure biometric authentication",
+    "End-to-end encrypted conversations",
+    "Crisis intervention protocols",
+    "Personalized therapeutic content",
   ];
 
   return (
@@ -82,7 +82,7 @@ export default function BiometricAuth({ onAuth }: BiometricAuthProps) {
         <div className="particle"></div>
         <div className="particle"></div>
       </div>
-       {/* Bolt Badge - Top Right Corner */}
+      {/* Bolt Badge - Top Right Corner */}
       <motion.a
         href="_blank"
         target="_blank"
@@ -102,7 +102,6 @@ export default function BiometricAuth({ onAuth }: BiometricAuthProps) {
       </motion.a>
 
       <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
-        
         {/* Left Side - App Info */}
         <motion.div
           initial={{ opacity: 0, x: -50 }}
@@ -120,9 +119,7 @@ export default function BiometricAuth({ onAuth }: BiometricAuthProps) {
                 <Shield className="w-8 h-8 text-white" />
               </div>
               <div>
-                <h1 className="text-4xl font-bold gradient-text">
-                  MindCare
-                </h1>
+                <h1 className="text-4xl font-bold gradient-text">MindCare</h1>
                 <p className="text-white/70">AI Mental Health Assistant</p>
               </div>
             </motion.div>
@@ -131,7 +128,8 @@ export default function BiometricAuth({ onAuth }: BiometricAuthProps) {
               Your Mental Health Companion
             </h2>
             <p className="text-xl text-white/80 mb-8">
-              Secure, AI-powered mental health support with advanced biometric protection.
+              Secure, AI-powered mental health support with advanced biometric
+              protection.
             </p>
           </div>
 
@@ -156,8 +154,9 @@ export default function BiometricAuth({ onAuth }: BiometricAuthProps) {
               <h3 className="font-semibold text-white">Privacy First</h3>
             </div>
             <p className="text-white/70 text-sm">
-              Your biometric data is processed locally and never stored on our servers. 
-              All conversations are encrypted end-to-end for maximum privacy.
+              Your biometric data is processed locally and never stored on our
+              servers. All conversations are encrypted end-to-end for maximum
+              privacy.
             </p>
           </div>
         </motion.div>
@@ -170,8 +169,12 @@ export default function BiometricAuth({ onAuth }: BiometricAuthProps) {
           className="glass-card p-8"
         >
           <div className="text-center mb-8">
-            <h3 className="text-2xl font-bold text-white mb-2">Secure Authentication</h3>
-            <p className="text-white/70">Choose your preferred biometric method</p>
+            <h3 className="text-2xl font-bold text-white mb-2">
+              Secure Authentication
+            </h3>
+            <p className="text-white/70">
+              Choose your preferred biometric method
+            </p>
           </div>
 
           {!authMethod && (
@@ -186,8 +189,12 @@ export default function BiometricAuth({ onAuth }: BiometricAuthProps) {
                   <Camera className="w-8 h-8 mr-3" />
                   <Eye className="w-6 h-6" />
                 </div>
-                <div className="text-lg font-semibold mb-2">Face Recognition</div>
-                <div className="text-sm opacity-90">Secure facial biometric authentication</div>
+                <div className="text-lg font-semibold mb-2">
+                  Face Recognition
+                </div>
+                <div className="text-sm opacity-90">
+                  Secure facial biometric authentication
+                </div>
               </motion.button>
 
               <motion.button
@@ -200,8 +207,12 @@ export default function BiometricAuth({ onAuth }: BiometricAuthProps) {
                   <Mic className="w-8 h-8 mr-3" />
                   <Volume2 className="w-6 h-6" />
                 </div>
-                <div className="text-lg font-semibold mb-2">Voice Recognition</div>
-                <div className="text-sm opacity-90">Secure voice biometric authentication</div>
+                <div className="text-lg font-semibold mb-2">
+                  Voice Recognition
+                </div>
+                <div className="text-sm opacity-90">
+                  Secure voice biometric authentication
+                </div>
               </motion.button>
 
               <div className="text-center mt-6">
@@ -215,13 +226,12 @@ export default function BiometricAuth({ onAuth }: BiometricAuthProps) {
             </div>
           )}
 
-          {authMethod === 'face' && (
+          {authMethod === "face" && (
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               className="text-center"
             >
-              
               <div className="relative mb-6">
                 <div className="w-48 h-48 mx-auto bg-gray-900 rounded-2xl overflow-hidden">
                   <video
@@ -236,7 +246,7 @@ export default function BiometricAuth({ onAuth }: BiometricAuthProps) {
                     </div>
                   )}
                 </div>
-                
+
                 {isScanning && (
                   <motion.div
                     initial={{ scale: 0.8, opacity: 0 }}
@@ -259,8 +269,11 @@ export default function BiometricAuth({ onAuth }: BiometricAuthProps) {
 
               <div className="mb-4">
                 <div className="text-lg font-semibold text-white mb-2">
-                  {isAuthenticated ? 'Authentication Successful!' : 
-                   isScanning ? 'Scanning Face...' : 'Position Your Face'}
+                  {isAuthenticated
+                    ? "Authentication Successful!"
+                    : isScanning
+                      ? "Scanning Face..."
+                      : "Position Your Face"}
                 </div>
                 <div className="w-full bg-white/20 rounded-full h-2">
                   <motion.div
@@ -270,12 +283,14 @@ export default function BiometricAuth({ onAuth }: BiometricAuthProps) {
                     transition={{ duration: 0.3 }}
                   />
                 </div>
-                <div className="text-sm text-white/70 mt-2">{progress}% Complete</div>
+                <div className="text-sm text-white/70 mt-2">
+                  {progress}% Complete
+                </div>
               </div>
             </motion.div>
           )}
 
-          {authMethod === 'voice' && (
+          {authMethod === "voice" && (
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -323,8 +338,11 @@ export default function BiometricAuth({ onAuth }: BiometricAuthProps) {
 
               <div className="mb-4">
                 <div className="text-lg font-semibold text-white mb-2">
-                  {isAuthenticated ? 'Voice Verified!' : 
-                   isScanning ? 'Analyzing Voice Pattern...' : 'Speak Naturally'}
+                  {isAuthenticated
+                    ? "Voice Verified!"
+                    : isScanning
+                      ? "Analyzing Voice Pattern..."
+                      : "Speak Naturally"}
                 </div>
                 <div className="w-full bg-white/20 rounded-full h-2">
                   <motion.div
@@ -334,7 +352,9 @@ export default function BiometricAuth({ onAuth }: BiometricAuthProps) {
                     transition={{ duration: 0.3 }}
                   />
                 </div>
-                <div className="text-sm text-white/70 mt-2">{progress}% Complete</div>
+                <div className="text-sm text-white/70 mt-2">
+                  {progress}% Complete
+                </div>
               </div>
 
               {isScanning && (

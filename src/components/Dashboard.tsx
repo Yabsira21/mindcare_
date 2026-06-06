@@ -1,8 +1,15 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { TrendingUp, Brain, Palette, MessageCircle, Shield, Activity } from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, AreaChart, Area } from 'recharts';
-import { useUser } from '../contexts/UserContext';
+import { motion } from "framer-motion";
+import {
+  Activity,
+  Brain,
+  MessageCircle,
+  Palette,
+  Shield,
+  TrendingUp,
+} from "lucide-react";
+import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import { useUser } from "../contexts/UserContext";
+import { useLanguage } from "../contexts/LanguageContext";
 
 interface DashboardProps {
   onNavigate: (view: string) => void;
@@ -10,60 +17,67 @@ interface DashboardProps {
 
 export default function Dashboard({ onNavigate }: DashboardProps) {
   const { user, checkUsageLimit } = useUser();
+  const { currentLanguage, translate } = useLanguage();
 
   const quickActions = [
     {
-      id: 'mood',
-      title: 'Track Mood',
-      description: 'Log your current emotional state',
+      id: "mood",
+      title: "Track Mood",
+      description: "Log your current emotional state",
       icon: Brain,
-      color: 'from-blue-400 to-blue-600',
-      action: () => onNavigate('mood'),
+      color: "from-blue-400 to-blue-600",
+      action: () => onNavigate("mood"),
     },
     {
-      id: 'art',
-      title: 'Art Therapy',
-      description: 'Create therapeutic art',
+      id: "art",
+      title: "Art Therapy",
+      description: "Create therapeutic art",
       icon: Palette,
-      color: 'from-green-400 to-green-600',
-      action: () => onNavigate('art'),
-      usage: checkUsageLimit('artTherapy'),
+      color: "from-green-400 to-green-600",
+      action: () => onNavigate("art"),
+      usage: checkUsageLimit("artTherapy"),
     },
     {
-      id: 'chat',
-      title: 'TicTac Chat',
-      description: 'Connect with support',
+      id: "chat",
+      title: "TicTac Chat",
+      description: "Connect with support",
       icon: MessageCircle,
-      color: 'from-orange-400 to-orange-600',
-      action: () => onNavigate('chat'),
-      usage: checkUsageLimit('tictacMinutes'),
+      color: "from-orange-400 to-orange-600",
+      action: () => onNavigate("chat"),
+      usage: checkUsageLimit("tictacMinutes"),
     },
   ];
 
-  const moodChartData = user.moodHistory.slice(0, 7).reverse().map((entry, index) => ({
-    day: new Date(entry.date).toLocaleDateString('en', { weekday: 'short' }),
-    mood: entry.mood,
-    anxiety: 10 - entry.anxiety, // Invert for better visualization
-    energy: entry.energy,
-  }));
+  const moodChartData = user.moodHistory
+    .slice(0, 7)
+    .reverse()
+    .map((entry, _) => ({
+      day: new Date(entry.date).toLocaleDateString("en", { weekday: "short" }),
+      mood: entry.mood,
+      anxiety: 10 - entry.anxiety, // Invert for better visualization
+      energy: entry.energy,
+    }));
 
   const aiInsights = [
     {
-      type: 'positive',
-      title: 'Mood Improvement Detected',
-      description: 'Your mood has improved by 23% over the past week. Keep up the great work!',
+      type: "positive",
+      title: "Mood Improvement Detected",
+      description:
+        "Your mood has improved by 23% over the past week. Keep up the great work!",
       confidence: 92,
     },
     {
-      type: 'suggestion',
-      title: 'Art Therapy Recommendation',
-      description: 'Based on your stress patterns, watercolor painting might be particularly beneficial.',
+      type: "suggestion",
+      title: "Art Therapy Recommendation",
+      description:
+        "Based on your stress patterns, watercolor painting might be particularly beneficial.",
       confidence: 87,
     },
     {
-      type: 'alert',
-      title: 'Sleep Pattern Notice',
-      description: 'Your voice analysis suggests irregular sleep. Consider establishing a bedtime routine.',
+      type: "alert",
+      title: "Sleep Pattern Notice",
+      description:
+        "Your voice analysis suggests irregular sleep. Consider establishing a bedtime routine.",
       confidence: 78,
     },
   ];
@@ -79,10 +93,17 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold mb-2 gradient-text">
-              Good {new Date().getHours() < 12 ? 'Morning' : 'Afternoon'}, {user.profile.name}
+              {/* Good {new Date().getHours() < 12 ? "Morning" : "Afternoon"},{" "} */}
+              {translate("dashboard.welcome", "Welcome")}
+              {user.profile.name}
             </h1>
             <p className="text-white/80 text-lg">
-              How are you feeling today? Let's check in with your mental wellness.
+              {/* How are you feeling today? Let's check in with your mental
+              wellness. */}
+              {translate(
+                "dashboard.greetings",
+                "  How are you feeling today? Let's check in with your mental wellness.",
+              )}
             </p>
           </div>
           <motion.div
@@ -97,7 +118,9 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
 
       {/* Quick Actions */}
       <section>
-        <h2 className="text-2xl font-semibold text-white mb-6">Quick Actions</h2>
+        <h2 className="text-2xl font-semibold text-white mb-6">
+          Quick Actions
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {quickActions.map((action, index) => (
             <motion.div
@@ -109,21 +132,25 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
               className="glass-card p-6 cursor-pointer text-white"
               onClick={action.action}
             >
-              <div className={`w-12 h-12 bg-gradient-to-r ${action.color} rounded-xl flex items-center justify-center mb-4`}>
+              <div
+                className={`w-12 h-12 bg-gradient-to-r ${action.color} rounded-xl flex items-center justify-center mb-4`}
+              >
                 <action.icon className="w-6 h-6 text-white" />
               </div>
               <h3 className="text-xl font-semibold mb-2">{action.title}</h3>
               <p className="text-white/70 mb-4">{action.description}</p>
-              
+
               {action.usage && (
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-white/60">
-                    {action.usage.remaining === -1 
-                      ? 'Unlimited' 
+                    {action.usage.remaining === -1
+                      ? "Unlimited"
                       : `${action.usage.remaining} remaining`}
                   </span>
                   {!action.usage.allowed && (
-                    <span className="text-orange-300 font-medium">Upgrade for more</span>
+                    <span className="text-orange-300 font-medium">
+                      Upgrade for more
+                    </span>
                   )}
                 </div>
               )}
@@ -141,7 +168,9 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
           className="glass-card p-6"
         >
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-semibold text-white">Weekly Mood Trends</h3>
+            <h3 className="text-xl font-semibold text-white">
+              Weekly Mood Trends
+            </h3>
             <TrendingUp className="w-5 h-5 text-green-400" />
           </div>
           <div className="h-64">
@@ -149,11 +178,16 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
               <AreaChart data={moodChartData}>
                 <defs>
                   <linearGradient id="moodGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#60a5fa" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#60a5fa" stopOpacity={0.1}/>
+                    <stop offset="5%" stopColor="#60a5fa" stopOpacity={0.8} />
+                    <stop offset="95%" stopColor="#60a5fa" stopOpacity={0.1} />
                   </linearGradient>
                 </defs>
-                <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: 'white', fontSize: 12 }} />
+                <XAxis
+                  dataKey="day"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: "white", fontSize: 12 }}
+                />
                 <YAxis hide />
                 <Area
                   type="monotone"
@@ -174,10 +208,12 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
           className="glass-card p-6"
         >
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-semibold text-white">Today's Wellness Score</h3>
+            <h3 className="text-xl font-semibold text-white">
+              Today's Wellness Score
+            </h3>
             <Activity className="w-5 h-5 text-blue-400" />
           </div>
-          
+
           <div className="flex items-center justify-center mb-6">
             <div className="relative w-32 h-32">
               <svg className="w-32 h-32 transform -rotate-90">
@@ -206,7 +242,7 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
               </div>
             </div>
           </div>
-          
+
           <div className="space-y-3">
             <div className="flex justify-between items-center">
               <span className="text-white/70">Mood</span>
@@ -231,13 +267,15 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
         transition={{ delay: 0.5 }}
       >
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-semibold text-white">AI-Powered Insights</h2>
+          <h2 className="text-2xl font-semibold text-white">
+            AI-Powered Insights
+          </h2>
           <span className="text-sm text-white/60 flex items-center">
             <Shield className="w-4 h-4 mr-1" />
             Powered by Gemma 3
           </span>
         </div>
-        
+
         <div className="space-y-4">
           {aiInsights.map((insight, index) => (
             <motion.div
@@ -246,29 +284,33 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.6 + index * 0.1 }}
               className={`glass-card p-6 border-l-4 ${
-                insight.type === 'positive'
-                  ? 'border-green-400'
-                  : insight.type === 'alert'
-                  ? 'border-orange-400'
-                  : 'border-blue-400'
+                insight.type === "positive"
+                  ? "border-green-400"
+                  : insight.type === "alert"
+                    ? "border-orange-400"
+                    : "border-blue-400"
               }`}
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <h4 className="font-semibold text-white mb-2">{insight.title}</h4>
+                  <h4 className="font-semibold text-white mb-2">
+                    {insight.title}
+                  </h4>
                   <p className="text-white/70 mb-3">{insight.description}</p>
                   <div className="flex items-center text-sm text-white/60">
                     <Brain className="w-4 h-4 mr-1" />
                     Confidence: {insight.confidence}%
                   </div>
                 </div>
-                <div className={`w-2 h-2 rounded-full ${
-                  insight.type === 'positive'
-                    ? 'bg-green-400'
-                    : insight.type === 'alert'
-                    ? 'bg-orange-400'
-                    : 'bg-blue-400'
-                } animate-pulse`} />
+                <div
+                  className={`w-2 h-2 rounded-full ${
+                    insight.type === "positive"
+                      ? "bg-green-400"
+                      : insight.type === "alert"
+                        ? "bg-orange-400"
+                        : "bg-blue-400"
+                  } animate-pulse`}
+                />
               </div>
             </motion.div>
           ))}

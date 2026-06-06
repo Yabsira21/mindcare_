@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Heart, Menu, X, Shield, AlertTriangle, Mic, Globe, User, Zap } from 'lucide-react';
-import { useUser } from '../contexts/UserContext';
-import { useLanguage } from '../contexts/LanguageContext';
+import { motion } from "framer-motion";
+import { AlertTriangle, Globe, Heart, Menu, Mic, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useLanguage } from "../contexts/LanguageContext";
+import { useUser } from "../contexts/UserContext";
 
 interface HeaderProps {
   currentView: string;
@@ -11,38 +11,54 @@ interface HeaderProps {
   onVoiceToggle: () => void;
 }
 
-export default function Header({ currentView, onNavigate, onCrisisAlert, onVoiceToggle }: HeaderProps) {
+export default function Header({
+  currentView,
+  onNavigate,
+  onCrisisAlert,
+  onVoiceToggle,
+}: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { user } = useUser();
-  const { currentLanguage, supportedLanguages, changeLanguage, translate } = useLanguage();
+  const { currentLanguage, supportedLanguages, changeLanguage, translate } =
+    useLanguage();
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const navigation = [
-    { id: 'dashboard', label: translate('dashboard.title', 'Dashboard'), icon: '🏠' },
-    { id: 'mood', label: translate('mood.title', 'Mood Tracker'), icon: '😊' },
-    { id: 'art', label: translate('art.title', 'Art Therapy'), icon: '🎨' },
-    { id: 'chat', label: translate('chat.title', 'TicTac Chat'), icon: '💬' },
-    { id: 'companion', label: translate('companion.title', 'AI Companion'), icon: '🤖' },
-    { id: 'profile', label: translate('profile.title', 'Profile'), icon: '👤' },
+    {
+      id: "dashboard",
+      label: translate("dashboard.title", "Dashboard"),
+      icon: "🏠",
+    },
+    { id: "mood", label: translate("mood.title", "Mood Tracker"), icon: "😊" },
+    { id: "art", label: translate("art.title", "Art Therapy"), icon: "🎨" },
+    { id: "chat", label: translate("chat.title", "TicTac Chat"), icon: "💬" },
+    {
+      id: "companion",
+      label: translate("companion.title", "AI Companion"),
+      icon: "🤖",
+    },
+    { id: "profile", label: translate("profile.title", "Profile"), icon: "👤" },
   ];
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
-      isScrolled 
-        ? 'glass-header backdrop-blur-30 shadow-lg py-2' 
-        : 'glass-header backdrop-blur-20 py-4'
-    }`}>
-            {/* Bolt Badge - Top Right Corner */}
+    <header
+      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
+        isScrolled
+          ? "glass-header backdrop-blur-30 shadow-lg py-2"
+          : "glass-header backdrop-blur-20 py-4"
+      }`}
+    >
+      {/* Bolt Badge - Top Right Corner */}
       <motion.a
         href="_blank"
         target="_blank"
@@ -64,7 +80,7 @@ export default function Header({ currentView, onNavigate, onCrisisAlert, onVoice
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <motion.div 
+          <motion.div
             className="flex items-center space-x-3"
             whileHover={{ scale: 1.05 }}
           >
@@ -73,9 +89,11 @@ export default function Header({ currentView, onNavigate, onCrisisAlert, onVoice
             </div>
             <div>
               <h1 className="text-xl font-bold gradient-text">
-                {translate('app.title', 'MindCare')}
+                {translate("app.title", "MindCare")}
               </h1>
-              <p className="text-xs text-white/70">{translate('app.subtitle', 'AI Mental Health Assistant')}</p>
+              <p className="text-xs text-white/70">
+                {translate("app.subtitle", "AI Mental Health Assistant")}
+              </p>
             </div>
           </motion.div>
 
@@ -87,8 +105,8 @@ export default function Header({ currentView, onNavigate, onCrisisAlert, onVoice
                 onClick={() => onNavigate(item.id)}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                   currentView === item.id
-                    ? 'glass-button text-white shadow-lg'
-                    : 'text-white/80 hover:text-white hover:bg-white/10'
+                    ? "glass-button text-white shadow-lg"
+                    : "text-white/80 hover:text-white hover:bg-white/10"
                 }`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -120,7 +138,9 @@ export default function Header({ currentView, onNavigate, onCrisisAlert, onVoice
               >
                 <Globe className="w-5 h-5" />
                 <span className="text-lg">{currentLanguage.flag}</span>
-                <span className="hidden sm:block text-sm">{currentLanguage.code.toUpperCase()}</span>
+                <span className="hidden sm:block text-sm">
+                  {currentLanguage.code.toUpperCase()}
+                </span>
               </motion.button>
 
               {showLanguageMenu && (
@@ -138,13 +158,17 @@ export default function Header({ currentView, onNavigate, onCrisisAlert, onVoice
                           setShowLanguageMenu(false);
                         }}
                         className={`w-full flex items-center space-x-3 p-3 rounded-lg text-left hover:bg-white/10 transition-colors ${
-                          currentLanguage.code === language.code ? 'bg-white/20 text-white' : 'text-white/80'
+                          currentLanguage.code === language.code
+                            ? "bg-white/20 text-white"
+                            : "text-white/80"
                         }`}
                       >
                         <span className="text-lg">{language.flag}</span>
                         <div className="flex-1">
                           <div className="font-medium">{language.name}</div>
-                          <div className="text-sm opacity-70">{language.nativeName}</div>
+                          <div className="text-sm opacity-70">
+                            {language.nativeName}
+                          </div>
                         </div>
                       </button>
                     ))}
@@ -158,20 +182,20 @@ export default function Header({ currentView, onNavigate, onCrisisAlert, onVoice
               onClick={onCrisisAlert}
               className="glass-button p-2 text-red-300 rounded-lg transition-colors hover:text-red-200"
               whileHover={{ scale: 1.1 }}
-              title={translate('crisis.support', 'Crisis Support')}
+              title={translate("crisis.support", "Crisis Support")}
             >
               <AlertTriangle className="w-5 h-5" />
             </motion.button>
 
             {/* Subscription Tier */}
             <button
-              onClick={() => onNavigate('subscription')}
+              onClick={() => onNavigate("subscription")}
               className={`px-3 py-1 rounded-full text-xs font-semibold glass-button ${
-                user.profile.tier === 'premium'
-                  ? 'text-orange-300'
-                  : user.profile.tier === 'professional'
-                  ? 'text-blue-300'
-                  : 'text-white/80'
+                user.profile.tier === "premium"
+                  ? "text-orange-300"
+                  : user.profile.tier === "professional"
+                    ? "text-blue-300"
+                    : "text-white/80"
               }`}
             >
               {user.profile.tier.toUpperCase()}
@@ -179,7 +203,7 @@ export default function Header({ currentView, onNavigate, onCrisisAlert, onVoice
 
             {/* User Avatar */}
             <motion.button
-              onClick={() => onNavigate('profile')}
+              onClick={() => onNavigate("profile")}
               className="flex items-center space-x-3"
               whileHover={{ scale: 1.05 }}
             >
@@ -189,8 +213,12 @@ export default function Header({ currentView, onNavigate, onCrisisAlert, onVoice
                 className="w-8 h-8 rounded-full border-2 border-white/30"
               />
               <div className="hidden sm:block">
-                <p className="text-sm font-semibold text-white">{user.profile.name}</p>
-                <p className="text-xs text-white/60">ID: {user.profile.id.slice(-6)}</p>
+                <p className="text-sm font-semibold text-white">
+                  {user.profile.name}
+                </p>
+                <p className="text-xs text-white/60">
+                  ID: {user.profile.id.slice(-6)}
+                </p>
               </div>
             </motion.button>
 
@@ -199,7 +227,11 @@ export default function Header({ currentView, onNavigate, onCrisisAlert, onVoice
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="md:hidden glass-button p-2 text-white rounded-lg"
             >
-              {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {isMenuOpen ? (
+                <X className="w-5 h-5" />
+              ) : (
+                <Menu className="w-5 h-5" />
+              )}
             </button>
           </div>
         </div>
@@ -208,7 +240,7 @@ export default function Header({ currentView, onNavigate, onCrisisAlert, onVoice
         {isMenuOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
+            animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             className="md:hidden border-t border-white/20 py-4"
           >
@@ -222,15 +254,15 @@ export default function Header({ currentView, onNavigate, onCrisisAlert, onVoice
                   }}
                   className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-left ${
                     currentView === item.id
-                      ? 'glass-button text-white'
-                      : 'text-white/80 hover:bg-white/10'
+                      ? "glass-button text-white"
+                      : "text-white/80 hover:bg-white/10"
                   }`}
                 >
                   <span className="text-lg">{item.icon}</span>
                   <span className="font-medium">{item.label}</span>
                 </button>
               ))}
-              
+
               {/* Mobile Bolt Badge */}
               <motion.a
                 href="https://bolt.new"

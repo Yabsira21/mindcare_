@@ -1,26 +1,38 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Mic, MicOff, Bot, User, Heart, Sparkles, Volume2, VolumeX, Brain } from 'lucide-react';
-import { useAI } from '../contexts/AIContext';
-import { useLanguage } from '../contexts/LanguageContext';
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  Bot,
+  Heart,
+  Mic,
+  MicOff,
+  Send,
+  Sparkles,
+  User,
+  Volume2,
+  VolumeX,
+} from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { useAI } from "../contexts/AIContext";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export default function AICompanion() {
   const { messages, isProcessing, sendMessage, clearConversation } = useAI();
   const { currentLanguage, translate } = useLanguage();
-  const [inputText, setInputText] = useState('');
+  const [inputText, setInputText] = useState("");
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   useEffect(() => {
     // Initialize speech recognition
-    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-      const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
+    if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
+      const SpeechRecognition =
+        (window as any).webkitSpeechRecognition ||
+        (window as any).SpeechRecognition;
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = false;
       recognitionRef.current.interimResults = false;
@@ -52,7 +64,7 @@ export default function AICompanion() {
     if (!inputText.trim()) return;
 
     const messageText = inputText;
-    setInputText('');
+    setInputText("");
     await sendMessage(messageText, currentLanguage.code);
   };
 
@@ -70,15 +82,15 @@ export default function AICompanion() {
   };
 
   const speakMessage = (text: string) => {
-    if ('speechSynthesis' in window) {
+    if ("speechSynthesis" in window) {
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = currentLanguage.code;
       utterance.rate = 0.9;
       utterance.pitch = 1;
-      
+
       utterance.onstart = () => setIsSpeaking(true);
       utterance.onend = () => setIsSpeaking(false);
-      
+
       speechSynthesis.speak(utterance);
     }
   };
@@ -89,10 +101,13 @@ export default function AICompanion() {
   };
 
   const conversationStarters = [
-    translate('companion.starter1', "Tell me about your day"),
-    translate('companion.starter2', "How are you feeling right now?"),
-    translate('companion.starter3', "What's been on your mind lately?"),
-    translate('companion.starter4', "Share something that made you smile today"),
+    translate("companion.starter1", "Tell me about your day"),
+    translate("companion.starter2", "How are you feeling right now?"),
+    translate("companion.starter3", "What's been on your mind lately?"),
+    translate(
+      "companion.starter4",
+      "Share something that made you smile today",
+    ),
   ];
 
   return (
@@ -107,10 +122,13 @@ export default function AICompanion() {
           <div>
             <h1 className="text-3xl font-bold mb-2 flex items-center gradient-text">
               <Bot className="w-8 h-8 mr-3 text-blue-400" />
-              {translate('companion.title', 'AI Companion')}
+              {translate("companion.title", "AI Companion")}
             </h1>
             <p className="text-white/80 text-lg">
-              {translate('companion.subtitle', 'Your personal mental health companion, available 24/7 in your language')}
+              {translate(
+                "companion.subtitle",
+                "Your personal mental health companion, available 24/7 in your language",
+              )}
             </p>
           </div>
           <motion.div
@@ -133,9 +151,13 @@ export default function AICompanion() {
                 <Bot className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h3 className="font-semibold text-white">AI Mental Health Companion</h3>
+                <h3 className="font-semibold text-white">
+                  AI Mental Health Companion
+                </h3>
                 <p className="text-sm text-white/70">
-                  {translate('companion.status', 'Online')} • {translate('companion.language', 'Speaking')} {currentLanguage.nativeName}
+                  {translate("companion.status", "Online")} •{" "}
+                  {translate("companion.language", "Speaking")}{" "}
+                  {currentLanguage.nativeName}
                 </p>
               </div>
             </div>
@@ -152,7 +174,7 @@ export default function AICompanion() {
                 onClick={clearConversation}
                 className="glass-button px-3 py-1 text-sm text-white rounded-lg transition-colors"
               >
-                {translate('companion.clear', 'Clear Chat')}
+                {translate("companion.clear", "Clear Chat")}
               </button>
             </div>
           </div>
@@ -170,12 +192,15 @@ export default function AICompanion() {
                 <Heart className="w-8 h-8 text-white" />
               </motion.div>
               <h3 className="text-lg font-semibold text-white mb-2">
-                {translate('companion.welcome', 'Welcome to your AI Companion')}
+                {translate("companion.welcome", "Welcome to your AI Companion")}
               </h3>
               <p className="text-white/70 mb-6">
-                {translate('companion.welcome_desc', 'I\'m here to listen, support, and help you navigate your mental health journey.')}
+                {translate(
+                  "companion.welcome_desc",
+                  "I'm here to listen, support, and help you navigate your mental health journey.",
+                )}
               </p>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-md mx-auto">
                 {conversationStarters.map((starter, index) => (
                   <motion.button
@@ -198,30 +223,42 @@ export default function AICompanion() {
                 key={message.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
               >
-                <div className={`flex items-start space-x-3 max-w-xs lg:max-w-md ${
-                  message.role === 'user' ? 'flex-row-reverse space-x-reverse' : ''
-                }`}>
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                    message.role === 'user' 
-                      ? 'bg-blue-500 text-white' 
-                      : 'gradient-button text-white'
-                  }`}>
-                    {message.role === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
+                <div
+                  className={`flex items-start space-x-3 max-w-xs lg:max-w-md ${
+                    message.role === "user"
+                      ? "flex-row-reverse space-x-reverse"
+                      : ""
+                  }`}
+                >
+                  <div
+                    className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                      message.role === "user"
+                        ? "bg-blue-500 text-white"
+                        : "gradient-button text-white"
+                    }`}
+                  >
+                    {message.role === "user" ? (
+                      <User className="w-4 h-4" />
+                    ) : (
+                      <Bot className="w-4 h-4" />
+                    )}
                   </div>
-                  
-                  <div className={`p-3 rounded-2xl ${
-                    message.role === 'user'
-                      ? 'bg-blue-500 text-white'
-                      : 'glass-card text-white'
-                  }`}>
+
+                  <div
+                    className={`p-3 rounded-2xl ${
+                      message.role === "user"
+                        ? "bg-blue-500 text-white"
+                        : "glass-card text-white"
+                    }`}
+                  >
                     <p className="text-sm">{message.content}</p>
                     <div className="flex items-center justify-between mt-2">
                       <span className="text-xs opacity-70">
                         {message.timestamp.toLocaleTimeString()}
                       </span>
-                      {message.role === 'assistant' && (
+                      {message.role === "assistant" && (
                         <button
                           onClick={() => speakMessage(message.content)}
                           className="p-1 hover:bg-white/20 rounded transition-colors"
@@ -233,8 +270,9 @@ export default function AICompanion() {
                     </div>
                     {message.emotion && (
                       <div className="mt-2 text-xs opacity-70">
-                        {translate('companion.emotion', 'Emotion')}: {message.emotion} 
-                        ({Math.round((message.confidence || 0) * 100)}%)
+                        {translate("companion.emotion", "Emotion")}:{" "}
+                        {message.emotion}(
+                        {Math.round((message.confidence || 0) * 100)}%)
                       </div>
                     )}
                   </div>
@@ -260,7 +298,11 @@ export default function AICompanion() {
                         key={i}
                         className="w-2 h-2 bg-white/60 rounded-full"
                         animate={{ scale: [1, 1.2, 1] }}
-                        transition={{ duration: 1, repeat: Infinity, delay: i * 0.2 }}
+                        transition={{
+                          duration: 1,
+                          repeat: Infinity,
+                          delay: i * 0.2,
+                        }}
                       />
                     ))}
                   </div>
@@ -280,8 +322,11 @@ export default function AICompanion() {
                 type="text"
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                placeholder={translate('companion.placeholder', 'Share what\'s on your mind...')}
+                onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+                placeholder={translate(
+                  "companion.placeholder",
+                  "Share what's on your mind...",
+                )}
                 className="w-full px-4 py-3 glass-card text-white placeholder-white/50 rounded-xl focus:ring-2 focus:ring-blue-400 focus:outline-none"
                 disabled={isProcessing}
               />
@@ -295,19 +340,23 @@ export default function AICompanion() {
                 </motion.div>
               )}
             </div>
-            
+
             <button
               onClick={handleVoiceInput}
               className={`glass-button p-3 rounded-xl transition-colors ${
-                isListening 
-                  ? 'bg-red-500 text-white' 
-                  : 'text-white hover:bg-white/20'
+                isListening
+                  ? "bg-red-500 text-white"
+                  : "text-white hover:bg-white/20"
               }`}
               disabled={isProcessing}
             >
-              {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+              {isListening ? (
+                <MicOff className="w-5 h-5" />
+              ) : (
+                <Mic className="w-5 h-5" />
+              )}
             </button>
-            
+
             <button
               onClick={handleSendMessage}
               disabled={!inputText.trim() || isProcessing}
@@ -316,9 +365,12 @@ export default function AICompanion() {
               <Send className="w-5 h-5" />
             </button>
           </div>
-          
+
           <div className="mt-3 text-xs text-white/50 text-center">
-            {translate('companion.privacy', 'Your conversations are private and secure. This AI is designed to provide support, not replace professional therapy.')}
+            {translate(
+              "companion.privacy",
+              "Your conversations are private and secure. This AI is designed to provide support, not replace professional therapy.",
+            )}
           </div>
         </div>
       </div>
@@ -335,10 +387,13 @@ export default function AICompanion() {
             <Sparkles className="w-6 h-6 text-white" />
           </div>
           <h3 className="text-lg font-semibold text-white mb-2">
-            {translate('companion.feature1', 'Emotion Recognition')}
+            {translate("companion.feature1", "Emotion Recognition")}
           </h3>
           <p className="text-white/70 text-sm">
-            {translate('companion.feature1_desc', 'Advanced AI analyzes your text and voice to understand your emotional state and provide appropriate support.')}
+            {translate(
+              "companion.feature1_desc",
+              "Advanced AI analyzes your text and voice to understand your emotional state and provide appropriate support.",
+            )}
           </p>
         </motion.div>
 
@@ -352,10 +407,13 @@ export default function AICompanion() {
             <Volume2 className="w-6 h-6 text-white" />
           </div>
           <h3 className="text-lg font-semibold text-white mb-2">
-            {translate('companion.feature2', 'Voice Interaction')}
+            {translate("companion.feature2", "Voice Interaction")}
           </h3>
           <p className="text-white/70 text-sm">
-            {translate('companion.feature2_desc', 'Speak naturally in your preferred language. The AI responds with voice synthesis for a more personal experience.')}
+            {translate(
+              "companion.feature2_desc",
+              "Speak naturally in your preferred language. The AI responds with voice synthesis for a more personal experience.",
+            )}
           </p>
         </motion.div>
 
@@ -369,10 +427,13 @@ export default function AICompanion() {
             <Heart className="w-6 h-6 text-white" />
           </div>
           <h3 className="text-lg font-semibold text-white mb-2">
-            {translate('companion.feature3', '24/7 Support')}
+            {translate("companion.feature3", "24/7 Support")}
           </h3>
           <p className="text-white/70 text-sm">
-            {translate('companion.feature3_desc', 'Always available when you need someone to talk to, providing consistent emotional support and coping strategies.')}
+            {translate(
+              "companion.feature3_desc",
+              "Always available when you need someone to talk to, providing consistent emotional support and coping strategies.",
+            )}
           </p>
         </motion.div>
       </div>

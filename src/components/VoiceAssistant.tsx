@@ -1,8 +1,19 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Mic, MicOff, Volume2, VolumeX, X, Globe, Settings, Brain, Sparkles, AlertCircle } from 'lucide-react';
-import { useLanguage } from '../contexts/LanguageContext';
-import { useAI } from '../contexts/AIContext';
+import { motion } from "framer-motion";
+import {
+  AlertCircle,
+  Brain,
+  Globe,
+  Mic,
+  MicOff,
+  Settings,
+  Sparkles,
+  Volume2,
+  VolumeX,
+  X,
+} from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { useAI } from "../contexts/AIContext";
+import { useLanguage } from "../contexts/LanguageContext";
 
 interface VoiceAssistantProps {
   onClose: () => void;
@@ -11,41 +22,51 @@ interface VoiceAssistantProps {
 export default function VoiceAssistant({ onClose }: VoiceAssistantProps) {
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [transcript, setTranscript] = useState('');
-  const [response, setResponse] = useState('');
+  const [transcript, setTranscript] = useState("");
+  const [response, setResponse] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [permissionError, setPermissionError] = useState<string | null>(null);
   const [isSupported, setIsSupported] = useState(true);
   const [voiceSettings, setVoiceSettings] = useState({
     rate: 0.9,
     pitch: 1,
-    volume: 0.8
+    volume: 0.8,
   });
-  
-  const { currentLanguage, supportedLanguages, changeLanguage, translate } = useLanguage();
+
+  const { currentLanguage, supportedLanguages, changeLanguage, translate } =
+    useLanguage();
   const { generateResponse, analyzeEmotion } = useAI();
   const recognitionRef = useRef<any>(null);
   const synthRef = useRef<SpeechSynthesis | null>(null);
 
   useEffect(() => {
     synthRef.current = window.speechSynthesis;
-    
+
     // Check if speech recognition is supported
-    if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+    if (
+      !("webkitSpeechRecognition" in window || "SpeechRecognition" in window)
+    ) {
       setIsSupported(false);
-      setPermissionError(translate('voice.not_supported', 'Speech recognition is not supported in this browser. Please use Chrome, Edge, or Safari.'));
+      setPermissionError(
+        translate(
+          "voice.not_supported",
+          "Speech recognition is not supported in this browser. Please use Chrome, Edge, or Safari.",
+        ),
+      );
       return;
     }
 
     // Initialize speech recognition
-    const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
+    const SpeechRecognition =
+      (window as any).webkitSpeechRecognition ||
+      (window as any).SpeechRecognition;
     recognitionRef.current = new SpeechRecognition();
     recognitionRef.current.continuous = true;
     recognitionRef.current.interimResults = true;
     recognitionRef.current.lang = currentLanguage.code;
 
     recognitionRef.current.onresult = (event: any) => {
-      let finalTranscript = '';
+      let finalTranscript = "";
       for (let i = event.resultIndex; i < event.results.length; i++) {
         if (event.results[i].isFinal) {
           finalTranscript += event.results[i][0].transcript;
@@ -58,27 +79,52 @@ export default function VoiceAssistant({ onClose }: VoiceAssistantProps) {
     };
 
     recognitionRef.current.onerror = (event: any) => {
-      console.error('Speech recognition error:', event.error);
+      console.error("Speech recognition error:", event.error);
       setIsListening(false);
-      
+
       // Handle different error types
       switch (event.error) {
-        case 'not-allowed':
-          setPermissionError(translate('voice.permission_denied', 'Microphone access denied. Please allow microphone access in your browser settings and refresh the page.'));
+        case "not-allowed":
+          setPermissionError(
+            translate(
+              "voice.permission_denied",
+              "Microphone access denied. Please allow microphone access in your browser settings and refresh the page.",
+            ),
+          );
           break;
-        case 'no-speech':
-          setPermissionError(translate('voice.no_speech', 'No speech detected. Please try speaking again.'));
+        case "no-speech":
+          setPermissionError(
+            translate(
+              "voice.no_speech",
+              "No speech detected. Please try speaking again.",
+            ),
+          );
           // Clear this error after a few seconds
           setTimeout(() => setPermissionError(null), 3000);
           break;
-        case 'audio-capture':
-          setPermissionError(translate('voice.audio_capture', 'No microphone found. Please check your microphone connection.'));
+        case "audio-capture":
+          setPermissionError(
+            translate(
+              "voice.audio_capture",
+              "No microphone found. Please check your microphone connection.",
+            ),
+          );
           break;
-        case 'network':
-          setPermissionError(translate('voice.network_error', 'Network error occurred. Please check your internet connection.'));
+        case "network":
+          setPermissionError(
+            translate(
+              "voice.network_error",
+              "Network error occurred. Please check your internet connection.",
+            ),
+          );
           break;
         default:
-          setPermissionError(translate('voice.generic_error', `Speech recognition error: ${event.error}. Please try again.`));
+          setPermissionError(
+            translate(
+              "voice.generic_error",
+              `Speech recognition error: ${event.error}. Please try again.`,
+            ),
+          );
           // Clear generic errors after a few seconds
           setTimeout(() => setPermissionError(null), 5000);
       }
@@ -105,8 +151,13 @@ export default function VoiceAssistant({ onClose }: VoiceAssistantProps) {
       setPermissionError(null);
       return true;
     } catch (error) {
-      console.error('Microphone permission error:', error);
-      setPermissionError(translate('voice.permission_required', 'Microphone access is required for voice features. Please allow microphone access and try again.'));
+      console.error("Microphone permission error:", error);
+      setPermissionError(
+        translate(
+          "voice.permission_required",
+          "Microphone access is required for voice features. Please allow microphone access and try again.",
+        ),
+      );
       return false;
     }
   };
@@ -116,18 +167,21 @@ export default function VoiceAssistant({ onClose }: VoiceAssistantProps) {
     try {
       // Analyze emotion
       const emotion = await analyzeEmotion(text, currentLanguage.code);
-      
+
       // Generate response
-      const aiResponse = await generateResponse(text, { 
-        language: currentLanguage.code, 
-        emotion: emotion.emotion 
+      const aiResponse = await generateResponse(text, {
+        language: currentLanguage.code,
+        emotion: emotion.emotion,
       });
-      
+
       setResponse(aiResponse);
       speakResponse(aiResponse);
     } catch (error) {
-      console.error('Voice processing error:', error);
-      const errorMsg = translate('voice.error', 'Sorry, I encountered an error. Please try again.');
+      console.error("Voice processing error:", error);
+      const errorMsg = translate(
+        "voice.error",
+        "Sorry, I encountered an error. Please try again.",
+      );
       setResponse(errorMsg);
       speakResponse(errorMsg);
     } finally {
@@ -138,17 +192,17 @@ export default function VoiceAssistant({ onClose }: VoiceAssistantProps) {
   const speakResponse = (text: string) => {
     if (synthRef.current && text) {
       synthRef.current.cancel(); // Stop any ongoing speech
-      
+
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = currentLanguage.code;
       utterance.rate = voiceSettings.rate;
       utterance.pitch = voiceSettings.pitch;
       utterance.volume = voiceSettings.volume;
-      
+
       utterance.onstart = () => setIsSpeaking(true);
       utterance.onend = () => setIsSpeaking(false);
       utterance.onerror = () => setIsSpeaking(false);
-      
+
       synthRef.current.speak(utterance);
     }
   };
@@ -160,7 +214,7 @@ export default function VoiceAssistant({ onClose }: VoiceAssistantProps) {
     } else {
       // Clear any previous permission errors
       setPermissionError(null);
-      
+
       // Request permission first
       const hasPermission = await requestMicrophonePermission();
       if (!hasPermission) {
@@ -172,11 +226,16 @@ export default function VoiceAssistant({ onClose }: VoiceAssistantProps) {
           recognitionRef.current.lang = currentLanguage.code;
           recognitionRef.current.start();
           setIsListening(true);
-          setTranscript('');
-          setResponse('');
+          setTranscript("");
+          setResponse("");
         } catch (error) {
-          console.error('Failed to start recognition:', error);
-          setPermissionError(translate('voice.start_error', 'Failed to start voice recognition. Please try again.'));
+          console.error("Failed to start recognition:", error);
+          setPermissionError(
+            translate(
+              "voice.start_error",
+              "Failed to start voice recognition. Please try again.",
+            ),
+          );
         }
       }
     }
@@ -190,10 +249,24 @@ export default function VoiceAssistant({ onClose }: VoiceAssistantProps) {
   };
 
   const quickCommands = [
-    { text: translate('voice.cmd1', 'How are you feeling?'), action: () => handleVoiceInput(translate('voice.cmd1', 'How are you feeling?')) },
-    { text: translate('voice.cmd2', 'Tell me about your day'), action: () => handleVoiceInput(translate('voice.cmd2', 'Tell me about your day')) },
-    { text: translate('voice.cmd3', 'I need support'), action: () => handleVoiceInput(translate('voice.cmd3', 'I need support')) },
-    { text: translate('voice.cmd4', 'Help me relax'), action: () => handleVoiceInput(translate('voice.cmd4', 'Help me relax')) },
+    {
+      text: translate("voice.cmd1", "How are you feeling?"),
+      action: () =>
+        handleVoiceInput(translate("voice.cmd1", "How are you feeling?")),
+    },
+    {
+      text: translate("voice.cmd2", "Tell me about your day"),
+      action: () =>
+        handleVoiceInput(translate("voice.cmd2", "Tell me about your day")),
+    },
+    {
+      text: translate("voice.cmd3", "I need support"),
+      action: () => handleVoiceInput(translate("voice.cmd3", "I need support")),
+    },
+    {
+      text: translate("voice.cmd4", "Help me relax"),
+      action: () => handleVoiceInput(translate("voice.cmd4", "Help me relax")),
+    },
   ];
 
   return (
@@ -217,10 +290,11 @@ export default function VoiceAssistant({ onClose }: VoiceAssistantProps) {
             <div>
               <h3 className="text-xl font-bold gradient-text flex items-center">
                 <Brain className="w-6 h-6 mr-2 text-blue-400" />
-                {translate('voice.title', 'Voice Assistant')}
+                {translate("voice.title", "Voice Assistant")}
               </h3>
               <p className="text-white/80 text-sm">
-                {translate('voice.subtitle', 'Speak in')} {currentLanguage.nativeName}
+                {translate("voice.subtitle", "Speak in")}{" "}
+                {currentLanguage.nativeName}
               </p>
             </div>
             <button
@@ -237,13 +311,17 @@ export default function VoiceAssistant({ onClose }: VoiceAssistantProps) {
           <div className="mx-6 mt-4 p-4 bg-red-500/20 border border-red-500/30 rounded-lg flex items-start space-x-3">
             <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-sm text-red-200 font-medium">Permission Required</p>
+              <p className="text-sm text-red-200 font-medium">
+                Permission Required
+              </p>
               <p className="text-xs text-red-300 mt-1">{permissionError}</p>
-              {permissionError.includes('not-allowed') && (
+              {permissionError.includes("not-allowed") && (
                 <div className="mt-2 text-xs text-red-300">
                   <p>To fix this:</p>
                   <ol className="list-decimal list-inside mt-1 space-y-1">
-                    <li>Look for a microphone icon in your browser's address bar</li>
+                    <li>
+                      Look for a microphone icon in your browser's address bar
+                    </li>
                     <li>Click it and select "Allow"</li>
                     <li>Or go to browser Settings → Privacy → Microphone</li>
                     <li>Refresh the page and try again</li>
@@ -259,9 +337,12 @@ export default function VoiceAssistant({ onClose }: VoiceAssistantProps) {
           <div className="mx-6 mt-4 p-4 bg-yellow-500/20 border border-yellow-500/30 rounded-lg flex items-start space-x-3">
             <AlertCircle className="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-sm text-yellow-200 font-medium">Browser Not Supported</p>
+              <p className="text-sm text-yellow-200 font-medium">
+                Browser Not Supported
+              </p>
               <p className="text-xs text-yellow-300 mt-1">
-                Speech recognition is not supported in this browser. Please use Chrome, Edge, or Safari for the best experience.
+                Speech recognition is not supported in this browser. Please use
+                Chrome, Edge, or Safari for the best experience.
               </p>
             </div>
           </div>
@@ -272,14 +353,14 @@ export default function VoiceAssistant({ onClose }: VoiceAssistantProps) {
           <motion.div
             className={`w-32 h-32 mx-auto rounded-full flex items-center justify-center mb-6 ${
               permissionError
-                ? 'bg-red-500/50'
-                : isListening 
-                ? 'bg-red-500' 
-                : isProcessing
-                ? 'bg-yellow-500'
-                : isSpeaking
-                ? 'bg-green-500'
-                : 'gradient-button'
+                ? "bg-red-500/50"
+                : isListening
+                  ? "bg-red-500"
+                  : isProcessing
+                    ? "bg-yellow-500"
+                    : isSpeaking
+                      ? "bg-green-500"
+                      : "gradient-button"
             }`}
             animate={isListening ? { scale: [1, 1.1, 1] } : {}}
             transition={{ duration: 1, repeat: Infinity }}
@@ -301,23 +382,22 @@ export default function VoiceAssistant({ onClose }: VoiceAssistantProps) {
           <div className="mb-6">
             <h4 className="text-lg font-semibold text-white mb-2">
               {permissionError
-                ? translate('voice.permission_needed', 'Permission Required')
-                : isListening 
-                ? translate('voice.listening', 'Listening...') 
-                : isProcessing
-                ? translate('voice.processing', 'Processing...')
-                : isSpeaking
-                ? translate('voice.speaking', 'Speaking...')
-                : translate('voice.ready', 'Ready to listen')
-              }
+                ? translate("voice.permission_needed", "Permission Required")
+                : isListening
+                  ? translate("voice.listening", "Listening...")
+                  : isProcessing
+                    ? translate("voice.processing", "Processing...")
+                    : isSpeaking
+                      ? translate("voice.speaking", "Speaking...")
+                      : translate("voice.ready", "Ready to listen")}
             </h4>
-            
+
             {transcript && (
               <div className="glass-card p-3 rounded-lg mb-4">
                 <p className="text-sm text-white/80">{transcript}</p>
               </div>
             )}
-            
+
             {response && (
               <div className="glass-card p-3 rounded-lg border border-blue-400/30">
                 <p className="text-sm text-white/90">{response}</p>
@@ -330,17 +410,33 @@ export default function VoiceAssistant({ onClose }: VoiceAssistantProps) {
             <motion.button
               onClick={toggleListening}
               className={`p-4 rounded-full text-white font-semibold transition-all ${
-                !isSupported || permissionError?.includes('not-allowed')
-                  ? 'bg-gray-500 cursor-not-allowed'
-                  : isListening 
-                  ? 'bg-red-500 hover:bg-red-600' 
-                  : 'gradient-button hover:shadow-lg'
+                !isSupported || permissionError?.includes("not-allowed")
+                  ? "bg-gray-500 cursor-not-allowed"
+                  : isListening
+                    ? "bg-red-500 hover:bg-red-600"
+                    : "gradient-button hover:shadow-lg"
               }`}
-              whileHover={!isSupported && !permissionError?.includes('not-allowed') ? { scale: 1.05 } : {}}
-              whileTap={!isSupported && !permissionError?.includes('not-allowed') ? { scale: 0.95 } : {}}
-              disabled={isProcessing || !isSupported || permissionError?.includes('not-allowed')}
+              whileHover={
+                !isSupported && !permissionError?.includes("not-allowed")
+                  ? { scale: 1.05 }
+                  : {}
+              }
+              whileTap={
+                !isSupported && !permissionError?.includes("not-allowed")
+                  ? { scale: 0.95 }
+                  : {}
+              }
+              disabled={
+                isProcessing ||
+                !isSupported ||
+                permissionError?.includes("not-allowed")
+              }
             >
-              {isListening ? <MicOff className="w-6 h-6" /> : <Mic className="w-6 h-6" />}
+              {isListening ? (
+                <MicOff className="w-6 h-6" />
+              ) : (
+                <Mic className="w-6 h-6" />
+              )}
             </motion.button>
 
             {isSpeaking && (
@@ -356,10 +452,10 @@ export default function VoiceAssistant({ onClose }: VoiceAssistantProps) {
           </div>
 
           {/* Quick Commands */}
-          {isSupported && !permissionError?.includes('not-allowed') && (
+          {isSupported && !permissionError?.includes("not-allowed") && (
             <div className="space-y-2">
               <h5 className="text-sm font-medium text-white/80 mb-3">
-                {translate('voice.quick_commands', 'Quick Commands')}
+                {translate("voice.quick_commands", "Quick Commands")}
               </h5>
               {quickCommands.map((command, index) => (
                 <button
@@ -386,13 +482,17 @@ export default function VoiceAssistant({ onClose }: VoiceAssistantProps) {
                 className="text-sm glass-card text-white rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-400"
               >
                 {supportedLanguages.slice(0, 10).map((lang) => (
-                  <option key={lang.code} value={lang.code} className="bg-gray-800">
+                  <option
+                    key={lang.code}
+                    value={lang.code}
+                    className="bg-gray-800"
+                  >
                     {lang.flag} {lang.name}
                   </option>
                 ))}
               </select>
             </div>
-            
+
             <div className="flex items-center space-x-2">
               <Settings className="w-4 h-4 text-white/60" />
               <input
@@ -401,7 +501,12 @@ export default function VoiceAssistant({ onClose }: VoiceAssistantProps) {
                 max="2"
                 step="0.1"
                 value={voiceSettings.rate}
-                onChange={(e) => setVoiceSettings(prev => ({ ...prev, rate: parseFloat(e.target.value) }))}
+                onChange={(e) =>
+                  setVoiceSettings((prev) => ({
+                    ...prev,
+                    rate: parseFloat(e.target.value),
+                  }))
+                }
                 className="w-16"
                 title="Speech Rate"
               />
@@ -412,10 +517,15 @@ export default function VoiceAssistant({ onClose }: VoiceAssistantProps) {
         {/* Instructions */}
         <div className="glass-header p-4 text-center">
           <p className="text-xs text-white/70">
-            {isSupported 
-              ? translate('voice.instructions', 'Tap the microphone and speak naturally. The AI will respond in your selected language.')
-              : translate('voice.browser_instructions', 'Please use Chrome, Edge, or Safari for voice features.')
-            }
+            {isSupported
+              ? translate(
+                  "voice.instructions",
+                  "Tap the microphone and speak naturally. The AI will respond in your selected language.",
+                )
+              : translate(
+                  "voice.browser_instructions",
+                  "Please use Chrome, Edge, or Safari for voice features.",
+                )}
           </p>
         </div>
       </motion.div>
