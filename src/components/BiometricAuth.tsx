@@ -1,79 +1,434 @@
-import { useState, useRef } from "react";
-import { motion } from "framer-motion";
-import { Camera, Mic, Shield, Eye, Volume2, Lock, Unlock } from "lucide-react";
+// import { useState, useRef } from "react";
+// import { motion } from "framer-motion";
+// import { Camera, Mic, Shield, Eye, Volume2, Lock, Unlock } from "lucide-react";
 
-interface BiometricAuthProps {
+// interface BiometricAuthProps {
+//   onAuth: (success: boolean) => void;
+// }
+
+// export default function BiometricAuth({ onAuth }: BiometricAuthProps) {
+//   const [authMethod, setAuthMethod] = useState<"face" | "voice" | null>(null);
+//   const [isScanning, setIsScanning] = useState(false);
+//   const [progress, setProgress] = useState(0);
+//   const [isAuthenticated, setIsAuthenticated] = useState(false);
+//   const videoRef = useRef<HTMLVideoElement>(null);
+
+//   const handleFaceAuth = async () => {
+//     setAuthMethod("face");
+//     setIsScanning(true);
+//     setProgress(0);
+
+//     // Simulate face scanning
+//     const interval = setInterval(() => {
+//       setProgress((prev) => {
+//         if (prev >= 100) {
+//           clearInterval(interval);
+//           setIsScanning(false);
+//           setIsAuthenticated(true);
+//           setTimeout(() => onAuth(true), 1000);
+//           return 100;
+//         }
+//         return prev + 10;
+//       });
+//     }, 200);
+
+//     // Get video stream for demo
+//     try {
+//       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+//       if (videoRef.current) {
+//         videoRef.current.srcObject = stream;
+//       }
+//     } catch (error) {
+//       console.log("Camera access denied - using demo mode");
+//     }
+//   };
+
+//   const handleVoiceAuth = async () => {
+//     setAuthMethod("voice");
+//     setIsScanning(true);
+//     setProgress(0);
+
+//     // Simulate voice analysis
+//     const interval = setInterval(() => {
+//       setProgress((prev) => {
+//         if (prev >= 100) {
+//           clearInterval(interval);
+//           setIsScanning(false);
+//           setIsAuthenticated(true);
+//           setTimeout(() => onAuth(true), 1000);
+//           return 100;
+//         }
+//         return prev + 8;
+//       });
+//     }, 250);
+//   };
+
+//   const features = [
+//     "AI-powered mental health analysis",
+//     "Secure biometric authentication",
+//     "End-to-end encrypted conversations",
+//     "Crisis intervention protocols",
+//     "Personalized therapeutic content",
+//   ];
+
+//   return (
+//     <div className="min-h-screen relative flex items-center justify-center p-4">
+//       {/* Animated background particles */}
+//       <div className="bg-particles">
+//         <div className="particle"></div>
+//         <div className="particle"></div>
+//         <div className="particle"></div>
+//         <div className="particle"></div>
+//         <div className="particle"></div>
+//         <div className="particle"></div>
+//       </div>
+//       {/* Bolt Badge - Top Right Corner */}
+//       <motion.a
+//         href="_blank"
+//         target="_blank"
+//         rel="noopener noreferrer"
+//         className="fixed top-6 right-6 z-50"
+//         whileHover={{ scale: 1.05 }}
+//         whileTap={{ scale: 0.95 }}
+//         title="Mind Care"
+//       >
+//         <div className="w-16 h-16 glass-card flex items-center justify-center hover:shadow-xl transition-all duration-300">
+//           <img
+//             src="/black_circle_360x360.png"
+//             alt="Mind Care"
+//             className="w-12 h-12 rounded-full"
+//           />
+//         </div>
+//       </motion.a>
+
+//       <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+//         {/* Left Side - App Info */}
+//         <motion.div
+//           initial={{ opacity: 0, x: -50 }}
+//           animate={{ opacity: 1, x: 0 }}
+//           className="space-y-8"
+//         >
+//           <div>
+//             <motion.div
+//               initial={{ scale: 0 }}
+//               animate={{ scale: 1 }}
+//               transition={{ delay: 0.2 }}
+//               className="flex items-center space-x-4 mb-6"
+//             >
+//               <div className="w-16 h-16 gradient-button rounded-2xl flex items-center justify-center">
+//                 <Shield className="w-8 h-8 text-white" />
+//               </div>
+//               <div>
+//                 <h1 className="text-4xl font-bold gradient-text">MindCare</h1>
+//                 <p className="text-white/70">AI Mental Health Assistant</p>
+//               </div>
+//             </motion.div>
+
+//             <h2 className="text-3xl font-bold text-white mb-4">
+//               Your Mental Health Companion
+//             </h2>
+//             <p className="text-xl text-white/80 mb-8">
+//               Secure, AI-powered mental health support with advanced biometric
+//               protection.
+//             </p>
+//           </div>
+
+//           <div className="space-y-4">
+//             {features.map((feature, index) => (
+//               <motion.div
+//                 key={index}
+//                 initial={{ opacity: 0, y: 20 }}
+//                 animate={{ opacity: 1, y: 0 }}
+//                 transition={{ delay: 0.4 + index * 0.1 }}
+//                 className="flex items-center space-x-3"
+//               >
+//                 <div className="w-2 h-2 bg-green-400 rounded-full" />
+//                 <span className="text-white/80">{feature}</span>
+//               </motion.div>
+//             ))}
+//           </div>
+
+//           <div className="glass-card p-6">
+//             <div className="flex items-center mb-3">
+//               <Lock className="w-5 h-5 text-blue-400 mr-2" />
+//               <h3 className="font-semibold text-white">Privacy First</h3>
+//             </div>
+//             <p className="text-white/70 text-sm">
+//               Your biometric data is processed locally and never stored on our
+//               servers. All conversations are encrypted end-to-end for maximum
+//               privacy.
+//             </p>
+//           </div>
+//         </motion.div>
+
+//         {/* Right Side - Authentication */}
+//         <motion.div
+//           initial={{ opacity: 0, x: 50 }}
+//           animate={{ opacity: 1, x: 0 }}
+//           transition={{ delay: 0.3 }}
+//           className="glass-card p-8"
+//         >
+//           <div className="text-center mb-8">
+//             <h3 className="text-2xl font-bold text-white mb-2">
+//               Secure Authentication
+//             </h3>
+//             <p className="text-white/70">
+//               Choose your preferred biometric method
+//             </p>
+//           </div>
+
+//           {!authMethod && (
+//             <div className="space-y-4">
+//               <motion.button
+//                 onClick={handleFaceAuth}
+//                 className="w-full glass-button text-white p-6 rounded-2xl hover:shadow-lg transition-all group"
+//                 whileHover={{ scale: 1.02 }}
+//                 whileTap={{ scale: 0.98 }}
+//               >
+//                 <div className="flex items-center justify-center mb-3">
+//                   <Camera className="w-8 h-8 mr-3" />
+//                   <Eye className="w-6 h-6" />
+//                 </div>
+//                 <div className="text-lg font-semibold mb-2">
+//                   Face Recognition
+//                 </div>
+//                 <div className="text-sm opacity-90">
+//                   Secure facial biometric authentication
+//                 </div>
+//               </motion.button>
+
+//               <motion.button
+//                 onClick={handleVoiceAuth}
+//                 className="w-full glass-button text-white p-6 rounded-2xl hover:shadow-lg transition-all group"
+//                 whileHover={{ scale: 1.02 }}
+//                 whileTap={{ scale: 0.98 }}
+//               >
+//                 <div className="flex items-center justify-center mb-3">
+//                   <Mic className="w-8 h-8 mr-3" />
+//                   <Volume2 className="w-6 h-6" />
+//                 </div>
+//                 <div className="text-lg font-semibold mb-2">
+//                   Voice Recognition
+//                 </div>
+//                 <div className="text-sm opacity-90">
+//                   Secure voice biometric authentication
+//                 </div>
+//               </motion.button>
+
+//               <div className="text-center mt-6">
+//                 <button
+//                   onClick={() => onAuth(true)}
+//                   className="text-white/60 hover:text-white/80 text-sm underline"
+//                 >
+//                   Skip authentication (Demo Mode)
+//                 </button>
+//               </div>
+//             </div>
+//           )}
+
+//           {authMethod === "face" && (
+//             <motion.div
+//               initial={{ opacity: 0, scale: 0.9 }}
+//               animate={{ opacity: 1, scale: 1 }}
+//               className="text-center"
+//             >
+//               <div className="relative mb-6">
+//                 <div className="w-48 h-48 mx-auto bg-gray-900 rounded-2xl overflow-hidden">
+//                   <video
+//                     ref={videoRef}
+//                     autoPlay
+//                     muted
+//                     className="w-full h-full object-cover"
+//                   />
+//                   {!videoRef.current?.srcObject && (
+//                     <div className="absolute inset-0 flex items-center justify-center">
+//                       <Camera className="w-16 h-16 text-white opacity-50" />
+//                     </div>
+//                   )}
+//                 </div>
+
+//                 {isScanning && (
+//                   <motion.div
+//                     initial={{ scale: 0.8, opacity: 0 }}
+//                     animate={{ scale: 1.2, opacity: [0, 1, 0] }}
+//                     transition={{ duration: 2, repeat: Infinity }}
+//                     className="absolute inset-0 border-4 border-blue-400 rounded-2xl"
+//                   />
+//                 )}
+
+//                 {isAuthenticated && (
+//                   <motion.div
+//                     initial={{ scale: 0 }}
+//                     animate={{ scale: 1 }}
+//                     className="absolute -top-2 -right-2 w-12 h-12 bg-green-500 rounded-full flex items-center justify-center"
+//                   >
+//                     <Unlock className="w-6 h-6 text-white" />
+//                   </motion.div>
+//                 )}
+//               </div>
+
+//               <div className="mb-4">
+//                 <div className="text-lg font-semibold text-white mb-2">
+//                   {isAuthenticated
+//                     ? "Authentication Successful!"
+//                     : isScanning
+//                       ? "Scanning Face..."
+//                       : "Position Your Face"}
+//                 </div>
+//                 <div className="w-full bg-white/20 rounded-full h-2">
+//                   <motion.div
+//                     className="bg-gradient-to-r from-blue-400 to-green-400 h-2 rounded-full"
+//                     initial={{ width: 0 }}
+//                     animate={{ width: `${progress}%` }}
+//                     transition={{ duration: 0.3 }}
+//                   />
+//                 </div>
+//                 <div className="text-sm text-white/70 mt-2">
+//                   {progress}% Complete
+//                 </div>
+//               </div>
+//             </motion.div>
+//           )}
+
+//           {authMethod === "voice" && (
+//             <motion.div
+//               initial={{ opacity: 0, scale: 0.9 }}
+//               animate={{ opacity: 1, scale: 1 }}
+//               className="text-center"
+//             >
+//               <div className="relative mb-6">
+//                 <div className="w-48 h-48 mx-auto bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center">
+//                   <motion.div
+//                     animate={isScanning ? { scale: [1, 1.2, 1] } : {}}
+//                     transition={{ duration: 1, repeat: Infinity }}
+//                   >
+//                     <Mic className="w-16 h-16 text-white" />
+//                   </motion.div>
+//                 </div>
+
+//                 {isScanning && (
+//                   <div className="absolute inset-0 flex items-center justify-center">
+//                     {[...Array(5)].map((_, i) => (
+//                       <motion.div
+//                         key={i}
+//                         className="w-1 h-16 bg-white rounded-full mx-1"
+//                         animate={{
+//                           scaleY: [1, 2, 1],
+//                         }}
+//                         transition={{
+//                           duration: 0.5,
+//                           repeat: Infinity,
+//                           delay: i * 0.1,
+//                         }}
+//                       />
+//                     ))}
+//                   </div>
+//                 )}
+
+//                 {isAuthenticated && (
+//                   <motion.div
+//                     initial={{ scale: 0 }}
+//                     animate={{ scale: 1 }}
+//                     className="absolute -top-2 -right-2 w-12 h-12 bg-green-500 rounded-full flex items-center justify-center"
+//                   >
+//                     <Unlock className="w-6 h-6 text-white" />
+//                   </motion.div>
+//                 )}
+//               </div>
+
+//               <div className="mb-4">
+//                 <div className="text-lg font-semibold text-white mb-2">
+//                   {isAuthenticated
+//                     ? "Voice Verified!"
+//                     : isScanning
+//                       ? "Analyzing Voice Pattern..."
+//                       : "Speak Naturally"}
+//                 </div>
+//                 <div className="w-full bg-white/20 rounded-full h-2">
+//                   <motion.div
+//                     className="bg-gradient-to-r from-green-400 to-blue-400 h-2 rounded-full"
+//                     initial={{ width: 0 }}
+//                     animate={{ width: `${progress}%` }}
+//                     transition={{ duration: 0.3 }}
+//                   />
+//                 </div>
+//                 <div className="text-sm text-white/70 mt-2">
+//                   {progress}% Complete
+//                 </div>
+//               </div>
+
+//               {isScanning && (
+//                 <p className="text-sm text-white/70">
+//                   "Please say: I am accessing my mental health assistant"
+//                 </p>
+//               )}
+//             </motion.div>
+//           )}
+
+//           {authMethod && !isAuthenticated && (
+//             <button
+//               onClick={() => {
+//                 setAuthMethod(null);
+//                 setIsScanning(false);
+//                 setProgress(0);
+//               }}
+//               className="w-full mt-4 py-3 glass-button text-white rounded-lg hover:bg-white/20"
+//             >
+//               Try Different Method
+//             </button>
+//           )}
+//         </motion.div>
+//       </div>
+//     </div>
+//   );
+// }
+
+import { motion } from "framer-motion";
+import {
+  Shield,
+  Mic,
+  MessageSquare,
+  Bot,
+  Globe,
+  ArrowRight,
+} from "lucide-react";
+
+interface LandingPageProps {
   onAuth: (success: boolean) => void;
 }
 
-export default function BiometricAuth({ onAuth }: BiometricAuthProps) {
-  const [authMethod, setAuthMethod] = useState<"face" | "voice" | null>(null);
-  const [isScanning, setIsScanning] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  const handleFaceAuth = async () => {
-    setAuthMethod("face");
-    setIsScanning(true);
-    setProgress(0);
-
-    // Simulate face scanning
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setIsScanning(false);
-          setIsAuthenticated(true);
-          setTimeout(() => onAuth(true), 1000);
-          return 100;
-        }
-        return prev + 10;
-      });
-    }, 200);
-
-    // Get video stream for demo
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-      }
-    } catch (error) {
-      console.log("Camera access denied - using demo mode");
-    }
-  };
-
-  const handleVoiceAuth = async () => {
-    setAuthMethod("voice");
-    setIsScanning(true);
-    setProgress(0);
-
-    // Simulate voice analysis
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setIsScanning(false);
-          setIsAuthenticated(true);
-          setTimeout(() => onAuth(true), 1000);
-          return 100;
-        }
-        return prev + 8;
-      });
-    }, 250);
-  };
-
+export default function BioMetricAuth({ onAuth }: LandingPageProps) {
   const features = [
-    "AI-powered mental health analysis",
-    "Secure biometric authentication",
-    "End-to-end encrypted conversations",
-    "Crisis intervention protocols",
-    "Personalized therapeutic content",
+    {
+      icon: <Mic className="w-5 h-5 text-white" />,
+      title: "Voice Mood Tracking",
+      description:
+        "Speak naturally—saying phrases like 'I'm feeling okay'—and let our AI analyze your emotional well-being through your vocal patterns.",
+    },
+    {
+      icon: <Bot className="w-5 h-5 text-white" />,
+      title: "Interactive AI Bot",
+      description:
+        "Get 24/7 empathetic conversational support, tailored guidance, and therapeutic mental wellness exercises whenever you need them.",
+    },
+    {
+      icon: <MessageSquare className="w-5 h-5 text-white" />,
+      title: "Supportive Group Chats",
+      description:
+        "Connect safely with community groups and share experiences in secure, moderated peer-to-peer discussions.",
+    },
+    {
+      icon: <Globe className="w-5 h-5 text-white" />,
+      title: "Multi-Language Support",
+      description:
+        "Express your feelings comfortably in your native tongue with comprehensive language options.",
+    },
   ];
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center p-4">
-      {/* Animated background particles */}
+    // Removed Tailwind's dark backgrounds so body linear gradient takes over
+    <div className="min-h-screen text-white font-sans antialiased overflow-x-hidden relative">
+      {/* Animated background particles from index.css */}
       <div className="bg-particles">
         <div className="particle"></div>
         <div className="particle"></div>
@@ -82,303 +437,170 @@ export default function BiometricAuth({ onAuth }: BiometricAuthProps) {
         <div className="particle"></div>
         <div className="particle"></div>
       </div>
-      {/* Bolt Badge - Top Right Corner */}
-      <motion.a
-        href="_blank"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="fixed top-6 right-6 z-50"
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        title="Mind Care"
-      >
-        <div className="w-16 h-16 glass-card flex items-center justify-center hover:shadow-xl transition-all duration-300">
-          <img
-            src="/black_circle_360x360.png"
-            alt="Mind Care"
-            className="w-12 h-12 rounded-full"
-          />
+
+      {/* 1. Navbar Setup (Inspired by image_ff86d0.png using your glass-header styles) */}
+      <header className="w-full max-w-7xl mx-auto px-6 h-20 flex items-center justify-between sticky top-0 z-50 glass-header">
+        <div className="flex items-center space-x-3">
+          <div className="w-9 h-9 primary-gradient rounded-xl flex items-center justify-center shadow-lg">
+            <Shield className="w-4 h-4 text-white" />
+          </div>
+          <span className="text-xl font-bold tracking-tight gradient-text">
+            MindCare
+          </span>
         </div>
-      </motion.a>
 
-      <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
-        {/* Left Side - App Info */}
-        <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="space-y-8"
-        >
-          <div>
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.2 }}
-              className="flex items-center space-x-4 mb-6"
+        <nav className="hidden md:flex items-center space-x-8 text-sm font-medium text-white/80">
+          <a href="#features" className="hover:text-white transition-colors">
+            Features
+          </a>
+          <a href="#about" className="hover:text-white transition-colors">
+            How it works
+          </a>
+          <a href="#privacy" className="hover:text-white transition-colors">
+            Privacy
+          </a>
+        </nav>
+
+        <div className="flex items-center space-x-4">
+          <button
+            onClick={() => onAuth(true)}
+            className="px-4 py-2 text-sm font-medium text-white/80 hover:text-white transition-colors"
+          >
+            Log In
+          </button>
+          <button
+            onClick={() => onAuth(true)}
+            className="px-4 py-2 text-sm font-semibold text-white gradient-button rounded-xl"
+          >
+            Start Now
+          </button>
+        </div>
+      </header>
+
+      {/* 2. Hero Section (Centered Vertical Stack Layout from image_ff86d0.png) */}
+      <main className="relative max-w-5xl mx-auto px-6 pt-20 pb-28 text-center z-10">
+        {/* Subtle grid accent overlaying your native gradient */}
+        <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_40%,#000_60%,transparent_100%)]" />
+
+        <div className="space-y-8 max-w-3xl mx-auto">
+          {/* Micro-badge */}
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="inline-flex items-center space-x-2 px-3 py-1 bg-white/10 border border-white/20 rounded-full shadow-inner"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+            <span className="text-[11px] font-bold tracking-wider uppercase text-white/90">
+              Voice-Driven Analysis
+            </span>
+          </motion.div>
+
+          {/* Central Title */}
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-5xl md:text-6xl font-black tracking-tight leading-[1.15]"
+          >
+            One tool to{" "}
+            <span className="relative inline-block gradient-text">
+              track
+              <span className="absolute bottom-2 left-0 w-full h-[4px] bg-[#ffa726]/40 rounded-full" />
+            </span>{" "}
+            your mood and support your mind
+          </motion.h1>
+
+          {/* Core subtext */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed"
+          >
+            MindCare helps you dynamically measure your emotional well-being
+            safely and quietly. Simply speak your mind, receive conversational
+            insights, or connect with peers.
+          </motion.p>
+
+          {/* Center Stack Dual Action Row */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4"
+          >
+            <button
+              onClick={() => onAuth(true)}
+              className="w-full sm:w-auto px-7 py-3.5 font-semibold text-white gradient-button rounded-xl flex items-center justify-center space-x-2 shadow-xl"
             >
-              <div className="w-16 h-16 gradient-button rounded-2xl flex items-center justify-center">
-                <Shield className="w-8 h-8 text-white" />
-              </div>
-              <div>
-                <h1 className="text-4xl font-bold gradient-text">MindCare</h1>
-                <p className="text-white/70">AI Mental Health Assistant</p>
-              </div>
-            </motion.div>
+              <span>Start for Free</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+            <a
+              href="#features"
+              className="w-full sm:w-auto px-7 py-3.5 font-semibold text-white glass-button rounded-xl inline-flex items-center justify-center"
+            >
+              Explore Features
+            </a>
+          </motion.div>
+        </div>
+      </main>
 
-            <h2 className="text-3xl font-bold text-white mb-4">
-              Your Mental Health Companion
+      {/* 3. Capabilities Presentation Block */}
+      <section
+        id="features"
+        className="relative border-t border-white/10 py-24 z-10"
+      >
+        <div className="max-w-6xl mx-auto px-6">
+          {/* Main Headers block */}
+          <div className="text-center space-y-4 mb-16">
+            <div className="inline-flex items-center px-2.5 py-1 bg-white/10 border border-white/20 rounded-md">
+              <span className="text-[11px] font-bold tracking-wider uppercase text-white/80">
+                Capabilities
+              </span>
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
+              Latest advanced technologies to <br />
+              ensure everything you need
             </h2>
-            <p className="text-xl text-white/80 mb-8">
-              Secure, AI-powered mental health support with advanced biometric
-              protection.
+            <p className="text-white/60 max-w-lg mx-auto text-sm">
+              Maximize your wellness tracking consistency with our private,
+              intuitive, and modern speech-analysis infrastructure.
             </p>
           </div>
 
-          <div className="space-y-4">
+          {/* Features Layout Grid utilizing original glass-card classes */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
             {features.map((feature, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 + index * 0.1 }}
-                className="flex items-center space-x-3"
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ delay: index * 0.05 }}
+                className="glass-card p-6 flex space-x-4 items-start group"
               >
-                <div className="w-2 h-2 bg-green-400 rounded-full" />
-                <span className="text-white/80">{feature}</span>
+                <div className="p-3 bg-white/10 border border-white/10 rounded-xl shrink-0 group-hover:scale-105 transition-transform">
+                  {feature.icon}
+                </div>
+                <div className="space-y-1">
+                  <h3 className="text-base font-bold text-white">
+                    {feature.title}
+                  </h3>
+                  <p className="text-sm text-white/80 leading-relaxed">
+                    {feature.description}
+                  </p>
+                </div>
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
 
-          <div className="glass-card p-6">
-            <div className="flex items-center mb-3">
-              <Lock className="w-5 h-5 text-blue-400 mr-2" />
-              <h3 className="font-semibold text-white">Privacy First</h3>
-            </div>
-            <p className="text-white/70 text-sm">
-              Your biometric data is processed locally and never stored on our
-              servers. All conversations are encrypted end-to-end for maximum
-              privacy.
-            </p>
-          </div>
-        </motion.div>
-
-        {/* Right Side - Authentication */}
-        <motion.div
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.3 }}
-          className="glass-card p-8"
-        >
-          <div className="text-center mb-8">
-            <h3 className="text-2xl font-bold text-white mb-2">
-              Secure Authentication
-            </h3>
-            <p className="text-white/70">
-              Choose your preferred biometric method
-            </p>
-          </div>
-
-          {!authMethod && (
-            <div className="space-y-4">
-              <motion.button
-                onClick={handleFaceAuth}
-                className="w-full glass-button text-white p-6 rounded-2xl hover:shadow-lg transition-all group"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <div className="flex items-center justify-center mb-3">
-                  <Camera className="w-8 h-8 mr-3" />
-                  <Eye className="w-6 h-6" />
-                </div>
-                <div className="text-lg font-semibold mb-2">
-                  Face Recognition
-                </div>
-                <div className="text-sm opacity-90">
-                  Secure facial biometric authentication
-                </div>
-              </motion.button>
-
-              <motion.button
-                onClick={handleVoiceAuth}
-                className="w-full glass-button text-white p-6 rounded-2xl hover:shadow-lg transition-all group"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <div className="flex items-center justify-center mb-3">
-                  <Mic className="w-8 h-8 mr-3" />
-                  <Volume2 className="w-6 h-6" />
-                </div>
-                <div className="text-lg font-semibold mb-2">
-                  Voice Recognition
-                </div>
-                <div className="text-sm opacity-90">
-                  Secure voice biometric authentication
-                </div>
-              </motion.button>
-
-              <div className="text-center mt-6">
-                <button
-                  onClick={() => onAuth(true)}
-                  className="text-white/60 hover:text-white/80 text-sm underline"
-                >
-                  Skip authentication (Demo Mode)
-                </button>
-              </div>
-            </div>
-          )}
-
-          {authMethod === "face" && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="text-center"
-            >
-              <div className="relative mb-6">
-                <div className="w-48 h-48 mx-auto bg-gray-900 rounded-2xl overflow-hidden">
-                  <video
-                    ref={videoRef}
-                    autoPlay
-                    muted
-                    className="w-full h-full object-cover"
-                  />
-                  {!videoRef.current?.srcObject && (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <Camera className="w-16 h-16 text-white opacity-50" />
-                    </div>
-                  )}
-                </div>
-
-                {isScanning && (
-                  <motion.div
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1.2, opacity: [0, 1, 0] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                    className="absolute inset-0 border-4 border-blue-400 rounded-2xl"
-                  />
-                )}
-
-                {isAuthenticated && (
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    className="absolute -top-2 -right-2 w-12 h-12 bg-green-500 rounded-full flex items-center justify-center"
-                  >
-                    <Unlock className="w-6 h-6 text-white" />
-                  </motion.div>
-                )}
-              </div>
-
-              <div className="mb-4">
-                <div className="text-lg font-semibold text-white mb-2">
-                  {isAuthenticated
-                    ? "Authentication Successful!"
-                    : isScanning
-                      ? "Scanning Face..."
-                      : "Position Your Face"}
-                </div>
-                <div className="w-full bg-white/20 rounded-full h-2">
-                  <motion.div
-                    className="bg-gradient-to-r from-blue-400 to-green-400 h-2 rounded-full"
-                    initial={{ width: 0 }}
-                    animate={{ width: `${progress}%` }}
-                    transition={{ duration: 0.3 }}
-                  />
-                </div>
-                <div className="text-sm text-white/70 mt-2">
-                  {progress}% Complete
-                </div>
-              </div>
-            </motion.div>
-          )}
-
-          {authMethod === "voice" && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="text-center"
-            >
-              <div className="relative mb-6">
-                <div className="w-48 h-48 mx-auto bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center">
-                  <motion.div
-                    animate={isScanning ? { scale: [1, 1.2, 1] } : {}}
-                    transition={{ duration: 1, repeat: Infinity }}
-                  >
-                    <Mic className="w-16 h-16 text-white" />
-                  </motion.div>
-                </div>
-
-                {isScanning && (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    {[...Array(5)].map((_, i) => (
-                      <motion.div
-                        key={i}
-                        className="w-1 h-16 bg-white rounded-full mx-1"
-                        animate={{
-                          scaleY: [1, 2, 1],
-                        }}
-                        transition={{
-                          duration: 0.5,
-                          repeat: Infinity,
-                          delay: i * 0.1,
-                        }}
-                      />
-                    ))}
-                  </div>
-                )}
-
-                {isAuthenticated && (
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    className="absolute -top-2 -right-2 w-12 h-12 bg-green-500 rounded-full flex items-center justify-center"
-                  >
-                    <Unlock className="w-6 h-6 text-white" />
-                  </motion.div>
-                )}
-              </div>
-
-              <div className="mb-4">
-                <div className="text-lg font-semibold text-white mb-2">
-                  {isAuthenticated
-                    ? "Voice Verified!"
-                    : isScanning
-                      ? "Analyzing Voice Pattern..."
-                      : "Speak Naturally"}
-                </div>
-                <div className="w-full bg-white/20 rounded-full h-2">
-                  <motion.div
-                    className="bg-gradient-to-r from-green-400 to-blue-400 h-2 rounded-full"
-                    initial={{ width: 0 }}
-                    animate={{ width: `${progress}%` }}
-                    transition={{ duration: 0.3 }}
-                  />
-                </div>
-                <div className="text-sm text-white/70 mt-2">
-                  {progress}% Complete
-                </div>
-              </div>
-
-              {isScanning && (
-                <p className="text-sm text-white/70">
-                  "Please say: I am accessing my mental health assistant"
-                </p>
-              )}
-            </motion.div>
-          )}
-
-          {authMethod && !isAuthenticated && (
-            <button
-              onClick={() => {
-                setAuthMethod(null);
-                setIsScanning(false);
-                setProgress(0);
-              }}
-              className="w-full mt-4 py-3 glass-button text-white rounded-lg hover:bg-white/20"
-            >
-              Try Different Method
-            </button>
-          )}
-        </motion.div>
-      </div>
+      {/* Footer System */}
+      <footer className="border-t border-white/10 py-8 text-center text-xs text-white/40 z-10 relative">
+        &copy; 2026 MindCare. Local processing ensured. Everything encrypted.
+      </footer>
     </div>
   );
 }

@@ -44,7 +44,7 @@ export default function Header({
     { id: "chat", label: translate("chat.title", "TicTac Chat"), icon: "💬" },
     {
       id: "groupchat",
-      label: translate("groupchat.title", "Group Chat"),
+      label: translate("Group Chat", "Group Chat"),
       icon: "👥",
     },
     {
@@ -269,7 +269,7 @@ export default function Header({
               ))}
 
               {/* Mobile Bolt Badge */}
-              <motion.a
+              {/* <motion.a
                 href="https://bolt.new"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -283,7 +283,7 @@ export default function Header({
                   className="w-6 h-6"
                 />
                 <span>Powered by Bolt</span>
-              </motion.a>
+              </motion.a> */}
             </nav>
           </motion.div>
         )}
